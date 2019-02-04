@@ -15,6 +15,7 @@ public class MyMovies {
      */
     public static void main(String[] args) {
         new MainMenu().setVisible(true);
+        System.out.println("Test commit");
     }
     
 }
