@@ -2,6 +2,7 @@
  * Created by Batzonis Constantinos
  */
 package mymovies;
+import GUI.MainMenu;
 
 /**
  *
@@ -13,7 +14,8 @@ public class MyMovies {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-    }
-    
+        new MainMenu().setVisible(true);
+        System.out.println("Test commit");
+        System.out.println("Another Test");
+    }    
 }
