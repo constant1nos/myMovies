@@ -3,6 +3,8 @@
  */
 package GUI;
 
+import API_Communication.JsonManager; // Η κλάση JsonManager
+
 /**
  *
  * @author dinob
@@ -14,6 +16,7 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public MainMenu() {
         initComponents();
+        JsonManager jsonManager = new JsonManager(); // Δημιουργία αντικειμένου JsonManager
     }
 
     /**
@@ -87,6 +90,7 @@ public class MainMenu extends javax.swing.JFrame {
                 new MainMenu().setVisible(true);
             }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
