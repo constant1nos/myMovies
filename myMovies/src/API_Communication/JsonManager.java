@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
+// Άντληση δεδομένων από το API της themoviedb.org
 public class JsonManager {
     
     private static final String URL_COMMAND = "https://api.themoviedb.org/3/genre/movie/list?api_key=bf92a1466e3a994ab59eb0886780f564";
