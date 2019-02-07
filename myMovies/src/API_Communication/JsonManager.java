@@ -62,5 +62,5 @@ public class JsonManager {
         {
             Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }   
+    }
 }
