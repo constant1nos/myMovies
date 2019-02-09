@@ -17,6 +17,5 @@ public class MyMovies {
         new MainMenu().setVisible(true);
         System.out.println("Test commit");
         System.out.println("κλιανησ χρηστοσ 07-02-2019");
-        // giorgos test
     }    
 }
