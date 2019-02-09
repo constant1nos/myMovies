@@ -19,14 +19,16 @@ import java.util.logging.Logger;
 // Άντληση δεδομένων από το API της themoviedb.org
 public class JsonManager {
     
-    private static final String URL_COMMAND = "https://api.themoviedb.org/3/genre/movie/list?api_key=bf92a1466e3a994ab59eb0886780f564";
+    private static final String API_KEY = "bf92a1466e3a994ab59eb0886780f564";
+    private static final String GENRE_URL_COMMAND = "https://api.themoviedb.org/3/genre/movie/list?api_key=";
+    private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=release_date.asc&api_key=";
     
     public JsonManager(){
 
         try
         {
-         /*κατασκευή ενός URL για το ερώτημα JSON weather now*/
-            URL url = new URL(URL_COMMAND);
+         /*κατασκευή ενός URL για άντληση των διαθέσιμων ειδών ταινιών*/
+            URL url = new URL(GENRE_URL_COMMAND+API_KEY);
             
             /*Ξεκινάει τη σύνδεση με τον server και αποθηκεύει τα δεδομένα στη ροή δεδομένων "is".*/          
             InputStream is = url.openStream(); 
@@ -39,20 +41,27 @@ public class JsonManager {
             JsonElement jElement = new JsonParser().parse(isr);
             
             /*εμείς γνωρίζουμε οτι είναι ένα JsonObject οπότε το αποθηκεύουμε σε μια αναφορά mainJsonObject*/   
-            if(jElement.isJsonArray()){
-                System.out.println("Είναι jsonArray");
-            }
-            else if(jElement.isJsonObject()) {
-                System.out.println("Είναι jsonObject");
-            }
-            else System.out.println("Είναι κάτι άλλο...");
-            
-            /*εμείς γνωρίζουμε οτι είναι ένα JsonObject οπότε το αποθηκεύουμε σε μια αναφορά mainJsonObject*/   
             JsonObject mainJsonObject = jElement.getAsJsonObject(); 
             
+            /*To mainJsonObject περιέχει ένα Array με τα διαθέσιμα είδη ταινιών*/
             JsonArray genres = mainJsonObject.get("genres").getAsJsonArray();
-            System.out.println("Έγινε κλήση του API...");
             
+            /*Κρατάμε μόνο τους κωδικούς που είναι Action, Romance ή Science Fiction*/
+            for(int i = 0; i < genres.size()-1; i++){
+                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Action")){
+                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
+                    //πρώτα να έχει δημιουργηθεί η entity class
+                }
+                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Romance")){
+                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
+                    //πρώτα να έχει δημιουργηθεί η entity class                    
+                }
+                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Science Fiction")){
+                     //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
+                    //πρώτα να έχει δημιουργηθεί η entity class                      
+                }
+            }
+                   
         }
         catch (MalformedURLException ex)
         {
