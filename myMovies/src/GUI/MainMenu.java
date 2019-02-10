@@ -28,11 +28,23 @@ public class MainMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        retrieveStroreMouvies = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        retrieveStroreMouvies.setForeground(new java.awt.Color(51, 0, 51));
+        retrieveStroreMouvies.setText("Retrieve & Store Mouvies");
+        retrieveStroreMouvies.setToolTipText("");
+        retrieveStroreMouvies.setActionCommand("Retrieve and Store Mouvies");
+        retrieveStroreMouvies.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(153, 51, 0)));
+        retrieveStroreMouvies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                retrieveStroreMouviesActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
         jMenu1.setToolTipText("");
@@ -47,15 +59,26 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1047, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(295, 295, 295)
+                .addComponent(retrieveStroreMouvies, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(578, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 557, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addComponent(retrieveStroreMouvies, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(460, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void retrieveStroreMouviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retrieveStroreMouviesActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_retrieveStroreMouviesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -97,5 +120,6 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JButton retrieveStroreMouvies;
     // End of variables declaration//GEN-END:variables
 }
