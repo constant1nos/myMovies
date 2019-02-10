@@ -19,9 +19,12 @@ import java.util.logging.Logger;
 // Άντληση δεδομένων από το API της themoviedb.org
 public class JsonManager {
     
-    private static final String API_KEY = "bf92a1466e3a994ab59eb0886780f564";
-    private static final String GENRE_URL_COMMAND = "https://api.themoviedb.org/3/genre/movie/list?api_key=";
-    private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=release_date.asc&api_key=";
+    //  Το κλειδί για την επικοινωνία με το API
+    private static final String API_KEY = "api_key=bf92a1466e3a994ab59eb0886780f564";
+    // Εντολή για ανάκτηση των id των ταινιών
+    private static final String GENRE_URL_COMMAND = "https://api.themoviedb.org/3/genre/movie/list?";
+    // Εύρεση των ταινιών με συγκεκριμένο id και κυκλοφορία μετά την 01/01/2000
+    private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=popularity.desc&";
     
     public JsonManager(){
 
@@ -57,19 +60,35 @@ public class JsonManager {
                     //πρώτα να έχει δημιουργηθεί η entity class                    
                 }
                 if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Science Fiction")){
-                     //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
+                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
                     //πρώτα να έχει δημιουργηθεί η entity class                      
                 }
             }
-                   
+            System.out.println("Η ανάκτηση των ειδών ήταν επιτυχής");
+            //Ανάκτηση δεδομένων ταινιών. Επιτρέπονται max 40 κλήσεις του API
+            //Η κάθε σελίδα επιστρέφει 20 ταινίες. Διαβάζω τις 40 πρώτες σελίδες
+            //Συνολικά έχουμε 800 ταινίες για τη βάση δεδομένων
+            for(int i=1; i < 40; i++){
+                url = new URL(MOVIE_URL_COMMAND+"page="+i+"&"+API_KEY);
+                is = url.openStream(); 
+                isr = new InputStreamReader(is);
+                jElement = new JsonParser().parse(isr);
+                mainJsonObject = jElement.getAsJsonObject(); 
+                JsonArray movies = mainJsonObject.get("results").getAsJsonArray();
+                for(int j = 0; j < movies.size(); j++){
+                    //TODO: Αποθήκευση δεδομένων της κάθε ταινίας στη βάση
+                    //Πρέπει πρώτα να έχει δημιουργηθεί η entity class
+                }
+            }
+            System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");
         }
         catch (MalformedURLException ex)
         {
-            Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, "προέκυψε σφάλμα MalformedURLException!", ex);
         } 
         catch (IOException ex)
         {
-            Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, "προέκυψε σφάλμα IOException!", ex);
         }
     }
 }

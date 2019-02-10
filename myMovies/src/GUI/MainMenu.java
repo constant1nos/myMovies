@@ -16,7 +16,9 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public MainMenu() {
         initComponents();
-        JsonManager jsonManager = new JsonManager(); // Δημιουργία αντικειμένου JsonManager
+        //Κώστας 10/02/2019
+        //Η κλάση JsonManager να καλείται όταν πατηθεί το κουμπί ανάκτηση δεδομένων
+        //JsonManager jsonManager = new JsonManager(); // Δημιουργία αντικειμένου JsonManager
     }
 
     /**
