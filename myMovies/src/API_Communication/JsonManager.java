@@ -87,10 +87,12 @@ public class JsonManager {
         catch (MalformedURLException ex)
         {
             Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, "προέκυψε σφάλμα MalformedURLException!", ex);
+            JOptionPane.showMessageDialog(null, "Η σύνδεση για ανάκτηση δεδομένων απέτυχε", "Σφάλμα σύνδεσης", JOptionPane.ERROR_MESSAGE);
         } 
         catch (IOException ex)
         {
             Logger.getLogger(JsonManager.class.getName()).log(Level.SEVERE, "προέκυψε σφάλμα IOException!", ex);
+            JOptionPane.showMessageDialog(null, "Η μεταφορά δεδομένων διακόπηκε απρόσμενα", "Σφάλμα σύνδεσης", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
