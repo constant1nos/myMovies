@@ -2,6 +2,7 @@
  * Created by Batzonis Constantinos - Klianis Christos - Servozlidis Giwrgos
  */
 package API_Communication;
+import javax.swing.JOptionPane;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -81,6 +82,7 @@ public class JsonManager {
                 }
             }
             System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");
+            JOptionPane.showMessageDialog(null, "Η ανάκτηση των ταινιών ήταν επιτυχής", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);
         }
         catch (MalformedURLException ex)
         {
