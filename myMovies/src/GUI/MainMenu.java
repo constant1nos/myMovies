@@ -176,8 +176,7 @@ public class MainMenu extends javax.swing.JFrame {
             public void run() {
                 new MainMenu().setVisible(true);
             }
-        });
-        
+        });        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
