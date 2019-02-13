@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import entity.Genre;
 
 
 // Άντληση δεδομένων από το API της themoviedb.org
@@ -28,7 +29,7 @@ public class JsonManager {
     private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=popularity.desc&";
     
     public JsonManager(){
-
+        String genreName;
         try
         {
          /*κατασκευή ενός URL για άντληση των διαθέσιμων ειδών ταινιών*/
@@ -50,19 +51,18 @@ public class JsonManager {
             /*To mainJsonObject περιέχει ένα Array με τα διαθέσιμα είδη ταινιών*/
             JsonArray genres = mainJsonObject.get("genres").getAsJsonArray();
             
+            DBManager dbManager = DBManager.getInstance();
             /*Κρατάμε μόνο τους κωδικούς που είναι Action, Romance ή Science Fiction*/
             for(int i = 0; i < genres.size()-1; i++){
-                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Action")){
-                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
-                    //πρώτα να έχει δημιουργηθεί η entity class
-                }
-                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Romance")){
-                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
-                    //πρώτα να έχει δημιουργηθεί η entity class                    
-                }
-                if(genres.get(i).getAsJsonObject().get("name").getAsString().equals("Science Fiction")){
-                    //TODO: Προσθήκη στη βάση δεδομένων στον πίνακα GENRE. Πρέπει
-                    //πρώτα να έχει δημιουργηθεί η entity class                      
+                genreName = genres.get(i).getAsJsonObject().get("name").getAsString();
+                if(genreName.equals("Action") || genreName.equals("Romance") || genreName.equals("Science Fiction")){
+                    Genre g = new Genre();
+                    dbManager.getEm().getTransaction().begin();
+                    g.setId(genres.get(i).getAsJsonObject().get("id").getAsInt());
+                    g.setName(genres.get(i).getAsJsonObject().get("name").getAsString());
+                    dbManager.getEm().persist(g);
+                    System.out.println(genres.get(i).getAsJsonObject().get("id").getAsInt());
+                    dbManager.getEm().getTransaction().commit();
                 }
             }
             System.out.println("Η ανάκτηση των ειδών ήταν επιτυχής");
