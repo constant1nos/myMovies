@@ -1,7 +1,7 @@
 /*
  * Created by Batzonis Constantinos - Klianis Christos - Servozlidis Giwrgos
  */
-package entity_class;
+package entity;
 
 /**
  *
