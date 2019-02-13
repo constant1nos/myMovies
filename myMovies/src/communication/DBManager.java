@@ -12,6 +12,11 @@ import javax.swing.JOptionPane;
  *
  * @author dinob
  */
+
+/* Υλοποίηση κλάσης Singleton η οποία δημιουργεί ένα αντικείμενο EntityManager */
+/* το οποίο χρησιμοποιείται ακθόλη τη διάρκεια εκτέλεσης του προγράμματος. */
+/* Η αρχικοποίηση του αντικειμένου αυτού γίνεται στην αρχή της main, ώστε να είναι */
+/* Thread-Safe*/
 public class DBManager {
     
     private static final String PERSISTENCE_UNIT = "myMoviesPU";
@@ -27,7 +32,6 @@ public class DBManager {
                 //δημιουργία Entity Manager που θα χρησιμοποιηθεί καθ όλη τη διάρκεια εκτέλεσης της εφαρμογής.
                 emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
                 em = emf.createEntityManager();
-                System.out.println("Έγινε σύνδεση με τη βάση");
             } 
             catch(Exception e) 
             {
