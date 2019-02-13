@@ -2,7 +2,7 @@
  * Created by Batzonis Constantinos
  */
 package mymovies;
-import GUI.MainMenu;
+import design.MainMenu;
 
 /**
  *

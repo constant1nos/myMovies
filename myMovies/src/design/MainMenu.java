@@ -1,9 +1,9 @@
 /*
  * Created by Batzonis Constantinos
  */
-package GUI;
+package design;
 
-import API_Communication.JsonManager; // Η κλάση JsonManager
+import communication.JsonManager; // Η κλάση JsonManager
 
 /**
  *
@@ -142,7 +142,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        new Search().setVisible(true);
+        //new Search().setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -151,7 +151,7 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        new Statistics().setVisible(true);
+        //new Statistics().setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**

@@ -1,7 +1,7 @@
 /*
  * Created by Batzonis Constantinos - Klianis Christos - Servozlidis Giwrgos
  */
-package API_Communication;
+package communication;
 import javax.swing.JOptionPane;
 
 import com.google.gson.JsonElement;
