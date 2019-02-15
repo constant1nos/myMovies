@@ -2,7 +2,10 @@
  * Created by Batzonis Constantinos
  */
 package mymovies;
-import GUI.MainMenu;
+import communication.DBManager;
+import design.MainMenu;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  *
@@ -14,6 +17,26 @@ public class MyMovies {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        DBManager dbManager = DBManager.getInstance();
+        EntityManager em = dbManager.getEm();
+        
+        //μέθοδος διαγραφής πίνακα μέσω ενός έτοιμου namedQuery.
+        //
+        try 
+        { 
+            em.getTransaction().begin();
+            Query query1 = em.createNamedQuery("Genre.deleteAll");
+            Query query2 = em.createNamedQuery("Movie.deleteAll");
+            query1.executeUpdate();
+            query2.executeUpdate();
+            em.getTransaction().commit();
+        } 
+        catch (Exception e) 
+        { 
+            em.getTransaction().rollback();
+        }  
+        
         new MainMenu().setVisible(true);
     }    
 }

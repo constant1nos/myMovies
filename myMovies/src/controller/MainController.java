@@ -3,10 +3,20 @@
  */
 package controller;
 
+import communication.DBManager;
+import javax.persistence.EntityManager;
+
 /**
  *
  * @author dinob
  */
-public class MainController {
+public abstract class MainController {
+    
+    protected EntityManager em;
+    
+    public MainController(){
+        DBManager dbManager = DBManager.getInstance();
+        em = dbManager.getEm();
+    }
     
 }
