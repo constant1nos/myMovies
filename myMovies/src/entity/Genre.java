@@ -4,16 +4,20 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,6 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Genre.deleteAll", query = "DELETE FROM Genre")})
 public class Genre implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "genreId")
+    private List<Movie> movieList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -38,8 +45,8 @@ public class Genre implements Serializable {
     @Basic(optional = false)
     @Column(name = "NAME")
     private String name;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "genre")
-    private Movie movie;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ID", fetch = FetchType.LAZY)
+    private List<Movie> MovieList;
 
     public Genre() {
     }
@@ -69,14 +76,7 @@ public class Genre implements Serializable {
         this.name = name;
     }
 
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -100,6 +100,15 @@ public class Genre implements Serializable {
     @Override
     public String toString() {
         return "entity.Genre[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Movie> getMovieList() {
+        return movieList;
+    }
+
+    public void setMovieList(List<Movie> movieList) {
+        this.movieList = movieList;
     }
     
 }

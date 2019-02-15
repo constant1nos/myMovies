@@ -4,18 +4,22 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,6 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "FavoriteList.findByName", query = "SELECT f FROM FavoriteList f WHERE f.name = :name")})
 public class FavoriteList implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "favoriteListId")
+    private List<Movie> movieList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +46,8 @@ public class FavoriteList implements Serializable {
     @Basic(optional = false)
     @Column(name = "NAME")
     private String name;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "favoriteList")
-    private Movie movie;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ID", fetch = FetchType.LAZY)
+    private List<Movie> MovieList;
 
     public FavoriteList() {
     }
@@ -70,14 +77,6 @@ public class FavoriteList implements Serializable {
         this.name = name;
     }
 
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -101,6 +100,15 @@ public class FavoriteList implements Serializable {
     @Override
     public String toString() {
         return "entity.FavoriteList[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Movie> getMovieList() {
+        return movieList;
+    }
+
+    public void setMovieList(List<Movie> movieList) {
+        this.movieList = movieList;
     }
     
 }

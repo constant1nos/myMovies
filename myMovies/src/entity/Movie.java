@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -35,6 +36,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Movie.findByRating", query = "SELECT m FROM Movie m WHERE m.rating = :rating")
     , @NamedQuery(name = "Movie.findByOverview", query = "SELECT m FROM Movie m WHERE m.overview = :overview")})
 public class Movie implements Serializable {
+
+    @JoinColumn(name = "FAVORITE_LIST_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private FavoriteList favoriteListId;
+    @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private Genre genreId;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -151,6 +159,22 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "entity.Movie[ id=" + id + " ]";
+    }
+
+    public FavoriteList getFavoriteListId() {
+        return favoriteListId;
+    }
+
+    public void setFavoriteListId(FavoriteList favoriteListId) {
+        this.favoriteListId = favoriteListId;
+    }
+
+    public Genre getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(Genre genreId) {
+        this.genreId = genreId;
     }
     
 }
