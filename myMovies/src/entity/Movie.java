@@ -8,14 +8,11 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,16 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Movie.findByOverview", query = "SELECT m FROM Movie m WHERE m.overview = :overview")})
 public class Movie implements Serializable {
 
-    @JoinColumn(name = "FAVORITE_LIST_ID", referencedColumnName = "ID", nullable = false)
-    @ManyToOne(optional = false)
-    private FavoriteList favoriteListId;
-    @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID", nullable = false)
-    @ManyToOne(optional = false)
-    private Genre genreId;
-
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
@@ -61,12 +50,12 @@ public class Movie implements Serializable {
     private Double rating;
     @Column(name = "OVERVIEW")
     private String overview;
-    @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private FavoriteList favoriteList;
-    @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Genre genre;
+    @JoinColumn(name = "FAVORITE_LIST_ID", referencedColumnName = "ID")
+    @ManyToOne
+    private FavoriteList favoriteListId;
+    @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Genre genreId;
 
     public Movie() {
     }
@@ -120,20 +109,20 @@ public class Movie implements Serializable {
         this.overview = overview;
     }
 
-    public FavoriteList getFavoriteList() {
-        return favoriteList;
+    public FavoriteList getFavoriteListId() {
+        return favoriteListId;
     }
 
-    public void setFavoriteList(FavoriteList favoriteList) {
-        this.favoriteList = favoriteList;
+    public void setFavoriteListId(FavoriteList favoriteListId) {
+        this.favoriteListId = favoriteListId;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public Genre getGenreId() {
+        return genreId;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setGenreId(Genre genreId) {
+        this.genreId = genreId;
     }
 
     @Override
@@ -159,22 +148,6 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         return "entity.Movie[ id=" + id + " ]";
-    }
-
-    public FavoriteList getFavoriteListId() {
-        return favoriteListId;
-    }
-
-    public void setFavoriteListId(FavoriteList favoriteListId) {
-        this.favoriteListId = favoriteListId;
-    }
-
-    public Genre getGenreId() {
-        return genreId;
-    }
-
-    public void setGenreId(Genre genreId) {
-        this.genreId = genreId;
     }
     
 }
