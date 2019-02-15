@@ -17,10 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import entity.Genre;
 import entity.Movie;
+import static entity.Movie_.genreId;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.persistence.EntityManager;
 
 
 // Άντληση δεδομένων από το API της themoviedb.org
@@ -100,16 +102,21 @@ public class JsonManager {
                 InputStreamReader isr = new InputStreamReader(is);
                 JsonElement jElement = new JsonParser().parse(isr);
                 JsonObject mainJsonObject = jElement.getAsJsonObject(); 
-                JsonArray moviesAPI = mainJsonObject.get("results").getAsJsonArray();
+                JsonArray moviesAPI = mainJsonObject.get("results").getAsJsonArray();                
+                DBManager dbm = DBManager.getInstance();
+                EntityManager em = dbm.getEm();
+                Genre genre = em.find(Genre.class, 28);
                 /* Από κάθε σελίδα αποθηκεύουμε τα δεδομένα που χρειαζόμαστε*/
                 for(int j = 0; j < moviesAPI.size(); j++){
                     Movie movie = new Movie();
+                    movie.setId(moviesAPI.get(j).getAsJsonObject().get("id").getAsInt());
                     movie.setTitle(moviesAPI.get(j).getAsJsonObject().get("title").getAsString());
                     movie.setOverview(moviesAPI.get(j).getAsJsonObject().get("overview").getAsString());
                     movie.setRating(moviesAPI.get(j).getAsJsonObject().get("vote_average").getAsDouble());
                     Date date = sdf.parse(moviesAPI.get(j).getAsJsonObject().get("release_date").getAsString());
                     java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
-                    movie.setReleaseDate(sqlDate); 
+                    movie.setReleaseDate(sqlDate);
+                    movie.setGenreId(genre);
                 }
             }
             System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");

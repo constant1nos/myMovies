@@ -27,7 +27,9 @@ public class MyMovies {
         { 
             em.getTransaction().begin();
             Query query1 = em.createNamedQuery("Genre.deleteAll");
+            Query query2 = em.createNamedQuery("Movie.deleteAll");
             query1.executeUpdate();
+            query2.executeUpdate();
             em.getTransaction().commit();
         } 
         catch (Exception e) 
