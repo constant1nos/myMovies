@@ -22,6 +22,7 @@ public class MyMovies {
         EntityManager em = dbManager.getEm();
         
         //μέθοδος διαγραφής πίνακα μέσω ενός έτοιμου namedQuery.
+        //
         try 
         { 
             em.getTransaction().begin();
