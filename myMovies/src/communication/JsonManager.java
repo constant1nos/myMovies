@@ -117,6 +117,7 @@ public class JsonManager {
                     java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
                     movie.setReleaseDate(sqlDate);
                     movie.setGenreId(genre);
+                    movies.add(movie);
                 }
             }
             System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");
