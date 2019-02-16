@@ -18,24 +18,8 @@ public class MyMovies {
      */
     public static void main(String[] args) {
         
+        // Αρχικοποίηση EntityManagerFactory και EntityManager
         DBManager dbManager = DBManager.getInstance();
-        EntityManager em = dbManager.getEm();
-        
-        //μέθοδος διαγραφής πίνακα μέσω ενός έτοιμου namedQuery.
-        //
-        try 
-        { 
-            em.getTransaction().begin();
-            Query query1 = em.createNamedQuery("Genre.deleteAll");
-            Query query2 = em.createNamedQuery("Movie.deleteAll");
-            query1.executeUpdate();
-            query2.executeUpdate();
-            em.getTransaction().commit();
-        } 
-        catch (Exception e) 
-        { 
-            em.getTransaction().rollback();
-        }  
         
         new MainMenu().setVisible(true);
     }    

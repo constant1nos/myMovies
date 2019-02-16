@@ -140,6 +140,10 @@ public class MainMenu extends javax.swing.JFrame {
         GenreController gc = new GenreController();
         MovieController mc = new MovieController();
         JsonManager jm = new JsonManager();
+        // Διαγραφή δεδομένων από τη βάση
+        gc.deleteFromDataBase("Genre.deleteAll");
+        mc.deleteFromDataBase("Movie.deleteAll");
+        // Αποθήκευση δεδομένων στη βάση
         gc.storeGenresToDataBase(jm.getGenres());
         try {
             mc.storeMoviesToDataBase(jm.getMovies());
