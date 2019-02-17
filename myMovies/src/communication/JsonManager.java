@@ -69,7 +69,7 @@ public class JsonManager {
                     genre.setId(genresAPI.get(i).getAsJsonObject().get("id").getAsInt());
                     genre.setName(genresAPI.get(i).getAsJsonObject().get("name").getAsString());
                     genres.add(genre);
-                    //Genre g = new Genre();
+                    Genre g = new Genre();
                     //dbManager.getEm().getTransaction().begin();
                     //g.setId(genresAPI.get(i).getAsJsonObject().get("id").getAsInt());
                     //g.setName(genresAPI.get(i).getAsJsonObject().get("name").getAsString());
@@ -87,7 +87,7 @@ public class JsonManager {
         }
         return genres;
     }
-            
+             
     public ArrayList<Movie> getMovies() throws ParseException{        
         ArrayList<Movie> movies = new ArrayList<Movie>(); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

@@ -1,5 +1,7 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package entity;
 
@@ -20,15 +22,15 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author dinob
+ * @author CHRISTOS
  */
 @Entity
 @Table(name = "FAVORITE_LIST")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "FavoriteList.findAll", query = "SELECT f FROM FavoriteList f")
-    , @NamedQuery(name = "FavoriteList.findById", query = "SELECT f FROM FavoriteList f WHERE f.id = :id")
-    , @NamedQuery(name = "FavoriteList.findByName", query = "SELECT f FROM FavoriteList f WHERE f.name = :name")})
+    @NamedQuery(name = "FavoriteList.findAll", query = "SELECT f FROM FavoriteList f"),
+    @NamedQuery(name = "FavoriteList.findById", query = "SELECT f FROM FavoriteList f WHERE f.id = :id"),
+    @NamedQuery(name = "FavoriteList.findByName", query = "SELECT f FROM FavoriteList f WHERE f.name = :name")})
 public class FavoriteList implements Serializable {
 
     private static final long serialVersionUID = 1L;
