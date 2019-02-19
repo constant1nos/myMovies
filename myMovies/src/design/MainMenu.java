@@ -3,19 +3,13 @@
  */
 package design;
 
-import communication.JsonManager; // Η κλάση JsonManager
-import controller.GenreController;
-import controller.MovieController;
-import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import communication.CommunicationWorker; // Η κλάση JsonManager
 
 /**
  *
  * @author dinob
  */
 public class MainMenu extends javax.swing.JFrame {
-
     /**
      * Creates new form MainMenu
      */
@@ -137,19 +131,8 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        GenreController gc = new GenreController();
-        MovieController mc = new MovieController();
-        JsonManager jm = new JsonManager();
-        // Διαγραφή δεδομένων από τη βάση
-        gc.deleteFromDataBase("Genre.deleteAll");
-        mc.deleteFromDataBase("Movie.deleteAll");
-        // Αποθήκευση δεδομένων στη βάση
-        gc.storeGenresToDataBase(jm.getGenres());
-        try {
-            mc.storeMoviesToDataBase(jm.getMovies());
-        } catch (ParseException ex) {
-            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        CommunicationWorker cw = new CommunicationWorker();
+        cw.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
