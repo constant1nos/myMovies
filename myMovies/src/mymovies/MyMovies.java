@@ -21,7 +21,7 @@ public class MyMovies {
      */
     public static void main(String[] args) {
         
-        // Αρχικοποίηση EntityManagerFactory και EntityManager
+        // Γίνονται 2 push ταυτόχρονα από διαφορετικά μέλη
         DBManager dbManager = DBManager.getInstance();
         
         /* Set Nimbus Look and Feel */
