@@ -47,21 +47,14 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace pref="444" max="32767" attributes="0"/>
+                  <EmptySpace pref="515" max="32767" attributes="0"/>
                   <Component id="infoLabel" pref="81" max="32767" attributes="0"/>
-                  <EmptySpace pref="523" max="32767" attributes="0"/>
+                  <EmptySpace pref="452" max="32767" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="1024" max="32767" attributes="0"/>
-                      <Component id="closeApp" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="995" max="32767" attributes="0"/>
-                      <Component id="maximizeApp" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="tmdbLabel" min="-2" pref="105" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="943" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -74,16 +67,7 @@
                   <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="closeApp" pref="40" max="32767" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="maximizeApp" pref="40" max="32767" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="tmdbLabel" alignment="0" pref="40" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -100,25 +84,13 @@
             <Property name="text" type="java.lang.String" value="my Movies"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="closeApp">
+        <Component class="javax.swing.JLabel" name="tmdbLabel">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/close.png"/>
+              <Image iconType="3" name="/resources/tmdb_small.png"/>
             </Property>
+            <Property name="text" type="java.lang.String" value="jLabel1"/>
           </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="closeAppMouseClicked"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="maximizeApp">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/maximize.png"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="maximizeAppMouseClicked"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -305,10 +277,10 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel1">
+            <Component class="javax.swing.JLabel" name="logoLabel">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/tmdb_very_small.png"/>
+                  <Image iconType="3" name="/resources/app_logo_small.png"/>
                 </Property>
               </Properties>
               <Constraints>

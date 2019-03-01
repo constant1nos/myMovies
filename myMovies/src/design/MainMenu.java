@@ -5,7 +5,6 @@ package design;
 
 import communication.CommunicationWorker;
 import controller.MovieController;
-import entity.Movie;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Image;
@@ -130,8 +129,7 @@ public class MainMenu extends java.awt.Frame {
 
         upperBar = new javax.swing.JLayeredPane();
         infoLabel = new javax.swing.JLabel();
-        closeApp = new javax.swing.JLabel();
-        maximizeApp = new javax.swing.JLabel();
+        tmdbLabel = new javax.swing.JLabel();
         backGroundPanel = new javax.swing.JPanel();
         backGroundImage = new javax.swing.JLabel();
         sideMenuBar = new javax.swing.JPanel();
@@ -141,7 +139,7 @@ public class MainMenu extends java.awt.Frame {
         searchButton = new javax.swing.JButton();
         statisticsButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        logoLabel = new javax.swing.JLabel();
         optionsBarPanel = new javax.swing.JPanel();
         homeOptionsPanel = new javax.swing.JPanel();
         favoriteOptionsPanel = new javax.swing.JPanel();
@@ -195,41 +193,24 @@ public class MainMenu extends java.awt.Frame {
         infoLabel.setForeground(new java.awt.Color(255, 255, 255));
         infoLabel.setText("my Movies");
 
-        closeApp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/close.png"))); // NOI18N
-        closeApp.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                closeAppMouseClicked(evt);
-            }
-        });
-
-        maximizeApp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/maximize.png"))); // NOI18N
-        maximizeApp.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                maximizeAppMouseClicked(evt);
-            }
-        });
+        tmdbLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tmdb_small.png"))); // NOI18N
+        tmdbLabel.setText("jLabel1");
 
         upperBar.setLayer(infoLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        upperBar.setLayer(closeApp, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        upperBar.setLayer(maximizeApp, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        upperBar.setLayer(tmdbLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout upperBarLayout = new javax.swing.GroupLayout(upperBar);
         upperBar.setLayout(upperBarLayout);
         upperBarLayout.setHorizontalGroup(
             upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(upperBarLayout.createSequentialGroup()
-                .addContainerGap(444, Short.MAX_VALUE)
+                .addContainerGap(515, Short.MAX_VALUE)
                 .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
-                .addContainerGap(523, Short.MAX_VALUE))
+                .addContainerGap(452, Short.MAX_VALUE))
             .addGroup(upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, upperBarLayout.createSequentialGroup()
-                    .addGap(0, 1024, Short.MAX_VALUE)
-                    .addComponent(closeApp)))
-            .addGroup(upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, upperBarLayout.createSequentialGroup()
-                    .addContainerGap(995, Short.MAX_VALUE)
-                    .addComponent(maximizeApp)
-                    .addGap(29, 29, 29)))
+                .addGroup(upperBarLayout.createSequentialGroup()
+                    .addComponent(tmdbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 943, Short.MAX_VALUE)))
         );
         upperBarLayout.setVerticalGroup(
             upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -238,13 +219,7 @@ public class MainMenu extends java.awt.Frame {
                 .addComponent(infoLabel)
                 .addGap(5, 5, 5))
             .addGroup(upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(upperBarLayout.createSequentialGroup()
-                    .addComponent(closeApp, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addGap(0, 0, 0)))
-            .addGroup(upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(upperBarLayout.createSequentialGroup()
-                    .addComponent(maximizeApp, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addGap(0, 0, 0)))
+                .addComponent(tmdbLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
         );
 
         add(upperBar, java.awt.BorderLayout.NORTH);
@@ -315,8 +290,8 @@ public class MainMenu extends java.awt.Frame {
         });
         sideMenuBar.add(exitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 325, 70, 50));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/tmdb_very_small.png"))); // NOI18N
-        sideMenuBar.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 474, 80, 50));
+        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/app_logo_small.png"))); // NOI18N
+        sideMenuBar.add(logoLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 474, 80, 50));
 
         optionsBarPanel.setBackground(new java.awt.Color(21, 21, 21));
         optionsBarPanel.setLayout(new java.awt.CardLayout());
@@ -654,17 +629,6 @@ public class MainMenu extends java.awt.Frame {
         mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
-    private void closeAppMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeAppMouseClicked
-        // TODO add your handling code here:
-        System.exit(0);
-    }//GEN-LAST:event_closeAppMouseClicked
-
-    private void maximizeAppMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_maximizeAppMouseClicked
-        // TODO add your handling code here:
-        this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
-
-    }//GEN-LAST:event_maximizeAppMouseClicked
-
     /* This method is used to scale the background image when jPanel dimensions change */
     private void backGroundPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backGroundPanelComponentResized
         // TODO add your handling code here:
@@ -695,7 +659,6 @@ public class MainMenu extends java.awt.Frame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backGroundImage;
     private javax.swing.JPanel backGroundPanel;
-    private javax.swing.JLabel closeApp;
     private javax.swing.JButton createListButton;
     private javax.swing.JButton createListButton1;
     private javax.swing.JButton createListButton2;
@@ -709,18 +672,17 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JPanel homeOptionsPanel;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JScrollPane listScrollPane;
+    private javax.swing.JLabel logoLabel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel mainPanelFavorite;
     private javax.swing.JPanel mainPanelHome;
     private javax.swing.JPanel mainPanelSearch;
     private javax.swing.JPanel mainPanelStatistics;
-    private javax.swing.JLabel maximizeApp;
     private javax.swing.JTextArea movieOverview;
     private javax.swing.JScrollPane movieScrollPane;
     private javax.swing.JLabel movieTitle;
@@ -732,6 +694,7 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JPanel sideMenuBar;
     private javax.swing.JButton statisticsButton;
     private javax.swing.JPanel statisticsOptionsPanel;
+    private javax.swing.JLabel tmdbLabel;
     private javax.swing.JButton topTenButton;
     private javax.swing.JButton topTenPerListButton;
     private javax.swing.JLayeredPane upperBar;
