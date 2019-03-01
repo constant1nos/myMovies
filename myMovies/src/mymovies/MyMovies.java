@@ -21,7 +21,7 @@ public class MyMovies {
      */
     public static void main(String[] args) {
         
-        // Παράδειγμα επίλυσης conflict στο NetBeans...
+        // Αρχικοποίηση EntityManagerFactory και EntityManager
         DBManager dbManager = DBManager.getInstance();
         
         /* Set Nimbus Look and Feel */
