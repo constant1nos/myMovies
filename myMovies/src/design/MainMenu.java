@@ -25,101 +25,101 @@ import javax.swing.JButton;
  * @author dinob
  */
 public class MainMenu extends java.awt.Frame {
-    
+
     BufferedImage img = null;
     int xMouse, yMouse;
+
     /**
      * Creates new form MainMenu
      */
     public MainMenu() throws MalformedURLException, IOException {
         /* Borderless window */
         //this.setUndecorated(true);
-        
+
         initComponents();
 
         // fill image in jlabel for general background //
         try {
-        img = ImageIO.read(new File("src/resources/bckgnd.jpg"));
+            img = ImageIO.read(new File("src/resources/bckgnd.jpg"));
         } catch (IOException e) {
-        e.printStackTrace();
-}
+            e.printStackTrace();
+        }
         Image dimg = img.getScaledInstance(backGroundImage.getWidth(), backGroundImage.getHeight(),
-        Image.SCALE_SMOOTH);
+                Image.SCALE_SMOOTH);
         ImageIcon imageIcon = new ImageIcon(dimg);
         backGroundImage.setIcon(imageIcon);
         // end of function //
-        
+
         // change panel's opacity and color //
         // Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels //
-        mainPanelHome.setBackground(new Color(0,204,102,40));
-        mainPanelFavorite.setBackground(new Color(0,204,102,40));
-        mainPanelStatistics.setBackground(new Color(0,204,102,40));
-        mainPanelSearch.setBackground(new Color(0,204,102,40));
+        mainPanelHome.setBackground(new Color(0, 204, 102, 40));
+        mainPanelFavorite.setBackground(new Color(0, 204, 102, 40));
+        mainPanelStatistics.setBackground(new Color(0, 204, 102, 40));
+        mainPanelSearch.setBackground(new Color(0, 204, 102, 40));
         //homeMainPanel.setBackground(new Color(0,204,102,50));
         //CardLayout cardTest = (CardLayout)mainPanel.getLayout();
         //cardTest.show(mainPanel, "homeMainPanel");
-        
+
         // Εμφάνιση του αρχικού optionsBarPanel //
-        CardLayout card = (CardLayout)optionsBarPanel.getLayout();
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
-        
+
         // Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη //
         // Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία //
         // και θα εμφανίζει στοιχεία και εικόνα στην οθόνη //
         MovieController mc = new MovieController();
-        Movie movie = mc.getMovie(260513);
-        movieTitle.setText(movie.getTitle());
-        movieOverview.setText(movie.getOverview());
+        // TODO: Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+        //Movie movie = mc.getMovie(260513); //ΠΡΟΣΟΧΗ! Αν η βάση δεδομένων είναι κενή, εδώ θα έχετε σφάλμα.
+        //movieTitle.setText(movie.getTitle());
+        //movieOverview.setText(movie.getOverview());
         URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
         Image image = ImageIO.read(url);
         ImageIcon icon = new ImageIcon(image);
         posterLabel.setIcon(icon);
-       
+
         // Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους //
-        rolloverButton(homeButton);        
-        rolloverButton(retrieveButton);        
-        rolloverButton(statisticsButton);        
+        rolloverButton(homeButton);
+        rolloverButton(retrieveButton);
+        rolloverButton(statisticsButton);
         rolloverButton(favoriteButton);
         rolloverButton(exitButton);
         rolloverButton(searchButton);
     }
-     
+
     /* Function that changes attributes of button when mouse is over */
-    private void rolloverButton(JButton button){
-         button.addMouseListener(new MouseAdapter() {
-         Color oldcolor1;
-         Color oldcolor2;
-         public void mouseEntered(MouseEvent me) {
-            if(button == homeButton){
-                infoLabel.setText("Αρχική");
+    private void rolloverButton(JButton button) {
+        button.addMouseListener(new MouseAdapter() {
+            Color oldcolor1;
+            Color oldcolor2;
+
+            public void mouseEntered(MouseEvent me) {
+                if (button == homeButton) {
+                    infoLabel.setText("Αρχική");
+                } else if (button == retrieveButton) {
+                    infoLabel.setText("Ανάκτηση και Αποθήκευση Δεδομένων");
+                } else if (button == favoriteButton) {
+                    infoLabel.setText("Διαχείριση Λιστών Αγαπημένων Ταινιών");
+                } else if (button == searchButton) {
+                    infoLabel.setText("Αναζήτηση Ταινιών");
+                } else if (button == statisticsButton) {
+                    infoLabel.setText("Στατιστικά");
+                } else if (button == exitButton) {
+                    infoLabel.setText("Έξοδος Εφαρμογής");
+                }
+                oldcolor1 = button.getForeground();
+                oldcolor2 = button.getBackground();
+                button.setForeground(new Color(0, 33, 33));
+                button.setBackground(new Color(0, 102, 51));
             }
-            else if(button == retrieveButton){
-                infoLabel.setText("Ανάκτηση και Αποθήκευση Δεδομένων");
+
+            public void mouseExited(MouseEvent me) {
+                button.setForeground(oldcolor1);
+                button.setBackground(oldcolor2);
+                infoLabel.setText("");
             }
-            else if(button == favoriteButton){
-                infoLabel.setText("Διαχείριση Λιστών Αγαπημένων Ταινιών");
-            }
-            else if(button == searchButton){
-                infoLabel.setText("Αναζήτηση Ταινιών");
-            }
-            else if(button == statisticsButton){
-                infoLabel.setText("Στατιστικά");
-            }
-            else if(button == exitButton){
-                infoLabel.setText("Έξοδος Εφαρμογής");
-            }
-            oldcolor1 = button.getForeground();
-            oldcolor2 = button.getBackground();
-            button.setForeground(new Color(0,33,33));
-            button.setBackground(new Color(0,102,51));
-         }
-         public void mouseExited(MouseEvent me) {
-            button.setForeground(oldcolor1);
-            button.setBackground(oldcolor2);
-            infoLabel.setText("");
-         }
-      });    
+        });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -604,7 +604,7 @@ public class MainMenu extends java.awt.Frame {
         // TODO add your handling code here:
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
-        this.setLocation(x-xMouse, y-yMouse);
+        this.setLocation(x - xMouse, y - yMouse);
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
@@ -615,22 +615,22 @@ public class MainMenu extends java.awt.Frame {
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
         // TODO add your handling code here:
-        CardLayout card = (CardLayout)optionsBarPanel.getLayout();
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
         mainPanelHome.setVisible(true);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);        
+        mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_homeButtonActionPerformed
 
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
         // TODO add your handling code here:
-        CardLayout card = (CardLayout)optionsBarPanel.getLayout();
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "statisticsPanel");
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(true);
-        mainPanelSearch.setVisible(false);        
+        mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_statisticsButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
@@ -646,11 +646,11 @@ public class MainMenu extends java.awt.Frame {
 
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
         // TODO add your handling code here:
-        CardLayout card = (CardLayout)optionsBarPanel.getLayout();
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "favoritePanel");
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(true);
-        mainPanelStatistics.setVisible(false); 
+        mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
@@ -662,36 +662,35 @@ public class MainMenu extends java.awt.Frame {
     private void maximizeAppMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_maximizeAppMouseClicked
         // TODO add your handling code here:
         this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
-        
+
     }//GEN-LAST:event_maximizeAppMouseClicked
 
     /* This method is used to scale the background image when jPanel dimensions change */
     private void backGroundPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backGroundPanelComponentResized
         // TODO add your handling code here:
-        if(this.getExtendedState() == 0){
+        if (this.getExtendedState() == 0) {
             backGroundImage.setSize(1048, 536);
         }
         Image dimg = img.getScaledInstance(backGroundImage.getWidth(), backGroundImage.getHeight(),
-        Image.SCALE_SMOOTH);
+                Image.SCALE_SMOOTH);
         ImageIcon imageIcon = new ImageIcon(dimg);
         backGroundImage.setIcon(imageIcon);
-       // System.out.println("width: "+backGroundImage.getWidth()+"Height: "+backGroundImage.getHeight());
+        // System.out.println("width: "+backGroundImage.getWidth()+"Height: "+backGroundImage.getHeight());
     }//GEN-LAST:event_backGroundPanelComponentResized
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
-        CardLayout card = (CardLayout)optionsBarPanel.getLayout();
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "searchPanel");
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
-        mainPanelStatistics.setVisible(false);  
+        mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(true);
     }//GEN-LAST:event_searchButtonActionPerformed
 
     /**
      * @param args the command line arguments
      */
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel backGroundImage;
