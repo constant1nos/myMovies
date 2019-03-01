@@ -5,6 +5,7 @@ package controller;
 
 import entity.Movie;
 import java.util.ArrayList;
+import javax.persistence.Query;
 
 /**
  *
@@ -23,5 +24,10 @@ public class MovieController extends MainController{
         }
         em.getTransaction().commit();
     }
+    public Movie getMovie(int id){
+        Query q = em.createNamedQuery("Movie.findById");
+        q.setParameter("id", 260513);
+        return (Movie)q.getSingleResult();
+    }    
     
 }
