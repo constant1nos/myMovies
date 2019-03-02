@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.FrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.persistence.EntityManager" name="myMoviesPUEntityManager">
+      <Properties>
+        <Property name="persistenceUnit" type="java.lang.String" value="myMoviesPU"/>
+      </Properties>
+    </Component>
+    <Component class="javax.persistence.Query" name="genreQuery">
+      <Properties>
+        <Property name="query" type="java.lang.String" value="SELECT g FROM Genre g"/>
+        <Property name="entityManager" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$EMProperty$EntityManagerEditor">
+          <ComponentRef name="myMoviesPUEntityManager"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="java.beans.Beans.isDesignTime() ? null : myMoviesPUEntityManager.createQuery(&quot;SELECT g.name FROM Genre g&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="java.util.List" name="genreList">
+      <Properties>
+        <Property name="query" type="java.lang.Object" editor="org.netbeans.modules.form.j2ee.J2EEPropertyModifier$QueryBeanProperty$QueryEditor">
+          <ComponentRef name="genreQuery"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;entity.Genre&gt;"/>
+      </AuxValues>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="33" green="33" red="33" type="rgb"/>
@@ -450,16 +478,9 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JComboBox" name="jComboBox1">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="4">
-                        <StringItem index="0" value="Item 1"/>
-                        <StringItem index="1" value="Item 2"/>
-                        <StringItem index="2" value="Item 3"/>
-                        <StringItem index="3" value="Item 4"/>
-                      </StringArray>
-                    </Property>
-                  </Properties>
+                  <BindingProperties>
+                    <BindingProperty name="elements" source="genreQuery" sourcePath="${resultList}" target="jComboBox1" targetPath="elements" updateStrategy="0" immediately="false"/>
+                  </BindingProperties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
@@ -473,6 +494,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="&#x388;&#x3c4;&#x3bf;&#x3c2; &#x39a;&#x3c5;&#x3ba;&#x3bb;&#x3bf;&#x3c6;&#x3bf;&#x3c1;&#x3af;&#x3b1;&#x3c2;"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField2ActionPerformed"/>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField2KeyTyped"/>
+                  </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                       <AbsoluteConstraints x="429" y="42" width="-1" height="-1"/>
@@ -505,6 +530,9 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="&#x39a;&#x3b1;&#x3b8;&#x3b1;&#x3c1;&#x3b9;&#x3c3;&#x3bc;&#x3cc;&#x3c2; &#x39a;&#x3c1;&#x3b9;&#x3c4;&#x3b7;&#x3c1;&#x3af;&#x3c9;&#x3bd;"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createListButton2ActionPerformed"/>
+                  </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                       <AbsoluteConstraints x="590" y="70" width="180" height="25"/>

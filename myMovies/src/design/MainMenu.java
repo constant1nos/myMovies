@@ -3,6 +3,7 @@
  */
 package design;
 
+import com.sun.glass.events.KeyEvent;
 import communication.CommunicationWorker;
 import controller.MovieController;
 import java.awt.CardLayout;
@@ -126,7 +127,11 @@ public class MainMenu extends java.awt.Frame {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        myMoviesPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("myMoviesPU").createEntityManager();
+        genreQuery = java.beans.Beans.isDesignTime() ? null : myMoviesPUEntityManager.createQuery("SELECT g.name FROM Genre g");
+        genreList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : genreQuery.getResultList();
         upperBar = new javax.swing.JLayeredPane();
         infoLabel = new javax.swing.JLabel();
         tmdbLabel = new javax.swing.JLabel();
@@ -368,10 +373,23 @@ public class MainMenu extends java.awt.Frame {
         searchOptionsPanel.setBackground(new java.awt.Color(21, 21, 21));
         searchOptionsPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${resultList}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, genreQuery, eLProperty, jComboBox1);
+        bindingGroup.addBinding(jComboBoxBinding);
+
         searchOptionsPanel.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(249, 40, -1, -1));
 
         jTextField2.setText("Έτος Κυκλοφορίας");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
+            }
+        });
         searchOptionsPanel.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(429, 42, -1, -1));
 
         createListButton1.setBackground(new java.awt.Color(0, 0, 0));
@@ -382,6 +400,11 @@ public class MainMenu extends java.awt.Frame {
         createListButton2.setBackground(new java.awt.Color(0, 0, 0));
         createListButton2.setForeground(new java.awt.Color(0, 204, 102));
         createListButton2.setText("Καθαρισμός Κριτηρίων");
+        createListButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createListButton2ActionPerformed(evt);
+            }
+        });
         searchOptionsPanel.add(createListButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 180, 25));
 
         optionsBarPanel.add(searchOptionsPanel, "searchPanel");
@@ -565,6 +588,8 @@ public class MainMenu extends java.awt.Frame {
 
         add(backGroundPanel, java.awt.BorderLayout.CENTER);
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -652,6 +677,23 @@ public class MainMenu extends java.awt.Frame {
         mainPanelSearch.setVisible(true);
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void createListButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createListButton2ActionPerformed
+        jTextField2.setText("");
+        jComboBox1.setSelectedIndex(-1);
+    }//GEN-LAST:event_createListButton2ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+        char c=evt.getKeyChar();
+        if(!(Character.isDigit(c)||c==KeyEvent.VK_BACKSPACE||c==KeyEvent.VK_DELETE)){
+            getToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField2KeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -668,6 +710,8 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JButton favoriteButton;
     private javax.swing.JList<String> favoriteList;
     private javax.swing.JPanel favoriteOptionsPanel;
+    private java.util.List<entity.Genre> genreList;
+    private javax.persistence.Query genreQuery;
     private javax.swing.JButton homeButton;
     private javax.swing.JPanel homeOptionsPanel;
     private javax.swing.JLabel infoLabel;
@@ -686,6 +730,7 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JTextArea movieOverview;
     private javax.swing.JScrollPane movieScrollPane;
     private javax.swing.JLabel movieTitle;
+    private javax.persistence.EntityManager myMoviesPUEntityManager;
     private javax.swing.JPanel optionsBarPanel;
     private javax.swing.JLabel posterLabel;
     private javax.swing.JButton retrieveButton;
@@ -698,5 +743,6 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JButton topTenButton;
     private javax.swing.JButton topTenPerListButton;
     private javax.swing.JLayeredPane upperBar;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
