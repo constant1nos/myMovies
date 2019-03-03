@@ -7,8 +7,6 @@ import design.MainMenu;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 /**
  *

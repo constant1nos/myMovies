@@ -26,7 +26,7 @@ public class MovieController extends MainController{
     }
     public Movie getMovie(int id){
         Query q = em.createNamedQuery("Movie.findById");
-        q.setParameter("id", 260513);
+        q.setParameter("id", id);
         return (Movie)q.getSingleResult();
     }    
     

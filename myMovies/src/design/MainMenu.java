@@ -3,16 +3,19 @@
  */
 package design;
 
-import com.sun.glass.events.KeyEvent;
+import java.awt.event.KeyEvent;
+// Γιώργο, αυτή τη βιβλιοθήκη δεν την βρήκα και έβαλα την απο πάνω
+//import com.sun.glass.events.KeyEvent;
 import communication.CommunicationWorker;
 import controller.MovieController;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,9 +29,7 @@ import javax.swing.JButton;
  */
 public class MainMenu extends java.awt.Frame {
 
-    BufferedImage img = null;
-    int xMouse, yMouse;
-
+    ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
     /**
      * Creates new form MainMenu
      */
@@ -36,37 +37,23 @@ public class MainMenu extends java.awt.Frame {
         /* Borderless window */
         //this.setUndecorated(true);
 
+        /* Αρχικοποίηση components της εφαρμογής. Δημιουργείται αυτόματα */
         initComponents();
-
-        // fill image in jlabel for general background //
-        try {
-            img = ImageIO.read(new File("src/resources/bckgnd.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Image dimg = img.getScaledInstance(backGroundImage.getWidth(), backGroundImage.getHeight(),
-                Image.SCALE_SMOOTH);
-        ImageIcon imageIcon = new ImageIcon(dimg);
-        backGroundImage.setIcon(imageIcon);
-        // end of function //
-
-        // change panel's opacity and color //
-        // Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels //
+        /* Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels */
         mainPanelHome.setBackground(new Color(0, 204, 102, 40));
         mainPanelFavorite.setBackground(new Color(0, 204, 102, 40));
         mainPanelStatistics.setBackground(new Color(0, 204, 102, 40));
         mainPanelSearch.setBackground(new Color(0, 204, 102, 40));
-        //homeMainPanel.setBackground(new Color(0,204,102,50));
-        //CardLayout cardTest = (CardLayout)mainPanel.getLayout();
-        //cardTest.show(mainPanel, "homeMainPanel");
 
-        // Εμφάνιση του αρχικού optionsBarPanel //
+        /* Εμφάνιση του αρχικού optionsBarPanel */
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
 
-        // Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη //
-        // Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία //
-        // και θα εμφανίζει στοιχεία και εικόνα στην οθόνη //
+        /* 
+         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
+         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
+         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
+         */
         MovieController mc = new MovieController();
         // TODO: Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
         //Movie movie = mc.getMovie(260513); //ΠΡΟΣΟΧΗ! Αν η βάση δεδομένων είναι κενή, εδώ θα έχετε σφάλμα.
@@ -77,7 +64,7 @@ public class MainMenu extends java.awt.Frame {
         ImageIcon icon = new ImageIcon(image);
         posterLabel.setIcon(icon);
 
-        // Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους //
+        /* Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους */
         rolloverButton(homeButton);
         rolloverButton(retrieveButton);
         rolloverButton(statisticsButton);
@@ -86,12 +73,13 @@ public class MainMenu extends java.awt.Frame {
         rolloverButton(searchButton);
     }
 
-    /* Function that changes attributes of button when mouse is over */
+    /* Μέθοδος διαχείρισης εμφάνισης jButton σε δυναμικό περιβάλλον */
     private void rolloverButton(JButton button) {
         button.addMouseListener(new MouseAdapter() {
             Color oldcolor1;
             Color oldcolor2;
 
+            @Override
             public void mouseEntered(MouseEvent me) {
                 if (button == homeButton) {
                     infoLabel.setText("Αρχική");
@@ -112,6 +100,7 @@ public class MainMenu extends java.awt.Frame {
                 button.setBackground(new Color(0, 102, 51));
             }
 
+            @Override
             public void mouseExited(MouseEvent me) {
                 button.setForeground(oldcolor1);
                 button.setBackground(oldcolor2);
@@ -175,16 +164,6 @@ public class MainMenu extends java.awt.Frame {
         jLabel4 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(51, 51, 51));
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                formMouseDragged(evt);
-            }
-        });
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                formMousePressed(evt);
-            }
-        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -390,7 +369,7 @@ public class MainMenu extends java.awt.Frame {
                 jTextField2KeyTyped(evt);
             }
         });
-        searchOptionsPanel.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(429, 42, -1, -1));
+        searchOptionsPanel.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(429, 42, 115, -1));
 
         createListButton1.setBackground(new java.awt.Color(0, 0, 0));
         createListButton1.setForeground(new java.awt.Color(0, 204, 102));
@@ -599,22 +578,8 @@ public class MainMenu extends java.awt.Frame {
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         System.exit(0);
     }//GEN-LAST:event_exitForm
-    /* Move window when dragged. Useful if setUndecorated = true */
-    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
-        // TODO add your handling code here:
-        int x = evt.getXOnScreen();
-        int y = evt.getYOnScreen();
-        this.setLocation(x - xMouse, y - yMouse);
-    }//GEN-LAST:event_formMouseDragged
-
-    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        // TODO add your handling code here:
-        xMouse = evt.getX();
-        yMouse = evt.getY();
-    }//GEN-LAST:event_formMousePressed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί homeButton*/
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
-        // TODO add your handling code here:
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
         mainPanelHome.setVisible(true);
@@ -622,9 +587,8 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_homeButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton*/
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
-        // TODO add your handling code here:
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "statisticsPanel");
         mainPanelHome.setVisible(false);
@@ -632,20 +596,18 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setVisible(true);
         mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_statisticsButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton*/
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
-        // TODO add your handling code here:
+        // έξοδος από την εαφρμογή
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί retrieveButton*/
     private void retrieveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retrieveButtonActionPerformed
-        // TODO add your handling code here:
         CommunicationWorker cm = new CommunicationWorker();
         cm.execute();
     }//GEN-LAST:event_retrieveButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton*/
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
-        // TODO add your handling code here:
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "favoritePanel");
         mainPanelHome.setVisible(false);
@@ -654,21 +616,27 @@ public class MainMenu extends java.awt.Frame {
         mainPanelSearch.setVisible(false);
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
-    /* This method is used to scale the background image when jPanel dimensions change */
+    /* 
+     * Μέθοδος προσαρμογής της εικόνας που βρίσκεται στο background, 
+     * όταν το παράθυρο αλλάξει μέγεθος. Αν αυτό γίνει μικρότερο από το αρχικό,
+     * τότε η εικόνα διατηρεί τις ίδιες διαστάσεις που είχε.
+     */
     private void backGroundPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backGroundPanelComponentResized
-        // TODO add your handling code here:
-        if (this.getExtendedState() == 0) {
-            backGroundImage.setSize(1048, 536);
+        // Τροποποίηση, μόνο σε περίπτωση που το παράθυρο γίνει μεγαλύτερο από το αρχικό
+        if(this.getBounds().width>=1064 || this.getBounds().height>=615){
+            // Οι διαστάσεις τις εικόνας μεταβάλλονται σε σχέση με το μήκος και πλάτος του παραθύρου
+            backGroundImage.setSize(this.getBounds().width-16, this.getBounds().height-79);
+            BufferedImage bi = new BufferedImage(backGroundImage.getWidth(), backGroundImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = (Graphics2D)bi.createGraphics();
+            g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,
+            RenderingHints.VALUE_RENDER_QUALITY));
+            g2d.drawImage(bckgndImage.getImage(), 0, 0, backGroundImage.getWidth(), backGroundImage.getHeight(), null);
+            ImageIcon imageIcon = new ImageIcon(bi);
+            backGroundImage.setIcon(imageIcon);             
         }
-        Image dimg = img.getScaledInstance(backGroundImage.getWidth(), backGroundImage.getHeight(),
-                Image.SCALE_SMOOTH);
-        ImageIcon imageIcon = new ImageIcon(dimg);
-        backGroundImage.setIcon(imageIcon);
-        // System.out.println("width: "+backGroundImage.getWidth()+"Height: "+backGroundImage.getHeight());
     }//GEN-LAST:event_backGroundPanelComponentResized
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchButton*/
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "searchPanel");
         mainPanelHome.setVisible(false);
@@ -688,7 +656,7 @@ public class MainMenu extends java.awt.Frame {
 
     private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
         char c=evt.getKeyChar();
-        if(!(Character.isDigit(c)||c==KeyEvent.VK_BACKSPACE||c==KeyEvent.VK_DELETE)){
+        if(!(Character.isDigit(c)||c==KeyEvent.VK_BACK_SPACE||c==KeyEvent.VK_DELETE)){
             getToolkit().beep();
             evt.consume();
         }

@@ -36,10 +36,11 @@ import javax.swing.SwingWorker;
  *
  * @author dinob
  */
-// Δημιουργία κλάσης SwingWorker, η οποία είναι ειδικά σχεδιασμένη για Swing
-// και μας επιτρέπει να εκτελούμε χρονοβόρα tasks σε ένα καινούριο Thread.
-// Με τον τρόπο αυτό αποφεύγουμε το "πάγωμα" της εφαρμογής
-// Περισσότερες πληροφορίες εδώ https://docs.oracle.com/javase/7/docs/api/javax/swing/SwingWorker.html
+/* Δημιουργία κλάσης SwingWorker, η οποία είναι ειδικά σχεδιασμένη για Swing
+ * και μας επιτρέπει να εκτελούμε χρονοβόρα tasks σε ένα καινούριο Thread.
+ * Με τον τρόπο αυτό αποφεύγουμε το "πάγωμα" της εφαρμογής
+ * Περισσότερες πληροφορίες εδώ https://docs.oracle.com/javase/7/docs/api/javax/swing/SwingWorker.html
+ */
 public class CommunicationWorker extends SwingWorker<String, String>{
     
     private String msg;
@@ -143,7 +144,6 @@ public class CommunicationWorker extends SwingWorker<String, String>{
             /*To mainJsonObject περιέχει ένα Array με τα διαθέσιμα είδη ταινιών*/
             JsonArray genresAPI = mainJsonObject.get("genres").getAsJsonArray();
             
-            //DBManager dbManager = DBManager.getInstance();
             /*Κρατάμε μόνο τους κωδικούς που είναι Action, Romance ή Science Fiction*/
             for(int i = 0; i < genresAPI.size()-1; i++){
                 genreName = genresAPI.get(i).getAsJsonObject().get("name").getAsString();
@@ -183,10 +183,10 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                 JsonElement jElement = new JsonParser().parse(isr);
                 JsonObject mainJsonObject = jElement.getAsJsonObject(); 
                 JsonArray moviesAPI = mainJsonObject.get("results").getAsJsonArray();
-                /* Χρήση EntityManager για ανάγνωση την ειδών των ταινιών*/
+                /* Χρήση EntityManager για ανάγνωση την ειδών των ταινιών */
                 DBManager dbm = DBManager.getInstance();
                 EntityManager em = dbm.getEm();
-                /* Από κάθε σελίδα αποθηκεύουμε τα δεδομένα που χρειαζόμαστε*/
+                /* Από κάθε σελίδα αποθηκεύουμε τα δεδομένα που χρειαζόμαστε */
                 for(int j = 0; j < moviesAPI.size(); j++){
                     Movie movie = new Movie();
                     movie.setId(moviesAPI.get(j).getAsJsonObject().get("id").getAsInt());
@@ -197,7 +197,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                     java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
                     movie.setReleaseDate(sqlDate);
                     movieGenres = moviesAPI.get(j).getAsJsonObject().get("genre_ids").getAsJsonArray();
-                    /* Βρόγχος εύρεσης του πρώτου επιθυμητού id από ένα JsonArray*/
+                    /* Βρόγχος εύρεσης του πρώτου επιθυμητού id από ένα JsonArray */
                     genreIdCounter = 0; // Αρχικοποίηση μετρητή
                     while(genreIdCounter < movieGenres.size()){
                         id = movieGenres.get(genreIdCounter).getAsInt();

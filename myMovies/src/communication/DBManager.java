@@ -13,9 +13,10 @@ import javax.swing.JOptionPane;
  * @author dinob
  */
 
-/* Υλοποίηση κλάσης Singleton για δημιουργία EntityManagerFactory */
-/* και διαχείριση EntityManager σε Multi-Thread περιβάλλον */
-/* Αρχικοποίηση στην αρχή της main για να είναι Thread-Safe */
+/* Υλοποίηση κλάσης Singleton για δημιουργία EntityManagerFactory 
+ * και διαχείριση EntityManager σε Multi-Thread περιβάλλον 
+ * Αρχικοποίηση στην αρχή της main για να είναι Thread-Safe 
+ */
 public class DBManager {
     
     private static final String PERSISTENCE_UNIT = "myMoviesPU";
@@ -30,7 +31,7 @@ public class DBManager {
         try 
         {
             if(em == null){
-                //δημιουργία Entity Manager
+                // δημιουργία Entity Manager
                 em = EMF.createEntityManager();
             } 
         }
