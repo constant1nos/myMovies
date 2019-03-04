@@ -13,14 +13,15 @@ import javax.swing.JOptionPane;
  * @author dinob
  */
 
-/* Υλοποίηση κλάσης Singleton η οποία δημιουργεί ένα αντικείμενο EntityManager */
-/* το οποίο χρησιμοποιείται ακθόλη τη διάρκεια εκτέλεσης του προγράμματος. */
-/* Η αρχικοποίηση του αντικειμένου αυτού γίνεται στην αρχή της main, ώστε να είναι */
-/* Thread-Safe*/
+/* Υλοποίηση κλάσης Singleton για δημιουργία EntityManagerFactory 
+ * και διαχείριση EntityManager σε Multi-Thread περιβάλλον 
+ * Αρχικοποίηση στην αρχή της main για να είναι Thread-Safe 
+ */
 public class DBManager {
     
     private static final String PERSISTENCE_UNIT = "myMoviesPU";
-    private EntityManagerFactory emf;
+    // Η κλάση EntityManagerFactory είναι Thread-Safe
+    private static final EntityManagerFactory EMF = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
     private EntityManager em;
     private final String ERROR_MSG = "Αποτυχία σύνδεσης με τη Βάση Δεδομένων!";
     
@@ -28,16 +29,16 @@ public class DBManager {
     
     private DBManager(){
         try 
-            {
-                //δημιουργία Entity Manager που θα χρησιμοποιηθεί καθ όλη τη διάρκεια εκτέλεσης της εφαρμογής.
-                emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
-                em = emf.createEntityManager();
+        {
+            if(em == null){
+                // δημιουργία Entity Manager
+                em = EMF.createEntityManager();
             } 
-            catch(Exception e) 
-            {
-                //System.out.println(e); 
-                JOptionPane.showMessageDialog(null, ERROR_MSG, "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
+        }
+        catch(Exception e) 
+        {
+            JOptionPane.showMessageDialog(null, ERROR_MSG, "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
    public static DBManager getInstance(){
