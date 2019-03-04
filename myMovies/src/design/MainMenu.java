@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 //import com.sun.glass.events.KeyEvent;
 import communication.CommunicationWorker;
 import controller.MovieController;
+import entity.Movie;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -20,8 +21,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import javax.persistence.NoResultException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -32,8 +35,9 @@ public class MainMenu extends java.awt.Frame {
     ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
     /**
      * Creates new form MainMenu
+     * @throws java.net.MalformedURLException
      */
-    public MainMenu() throws MalformedURLException, IOException {
+    public MainMenu() throws MalformedURLException, IOException, NoResultException {
         /* Borderless window */
         //this.setUndecorated(true);
 
@@ -54,15 +58,21 @@ public class MainMenu extends java.awt.Frame {
          * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
          * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
          */
-        MovieController mc = new MovieController();
-        // TODO: Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-        //Movie movie = mc.getMovie(260513); //ΠΡΟΣΟΧΗ! Αν η βάση δεδομένων είναι κενή, εδώ θα έχετε σφάλμα.
-        //movieTitle.setText(movie.getTitle());
-        //movieOverview.setText(movie.getOverview());
-        URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
-        Image image = ImageIO.read(url);
-        ImageIcon icon = new ImageIcon(image);
-        posterLabel.setIcon(icon);
+        try{
+            MovieController mc = new MovieController();
+            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+            Movie movie = mc.getMovie(9806);
+            movieTitle.setText(movie.getTitle());
+            movieOverview.setText(movie.getOverview());
+            URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
+            Image image = ImageIO.read(url);
+            ImageIcon icon = new ImageIcon(image);
+            posterLabel.setIcon(icon);
+        }
+        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+        catch(NoResultException nre){
+            JOptionPane.showMessageDialog(null, "Δεν υπάρχει το αντικείμενο στη βάση δεδομένων", "Σφάλμα", JOptionPane.INFORMATION_MESSAGE);
+        }
 
         /* Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους */
         rolloverButton(homeButton);
@@ -216,7 +226,6 @@ public class MainMenu extends java.awt.Frame {
         });
 
         sideMenuBar.setBackground(new java.awt.Color(21, 21, 21));
-        sideMenuBar.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         homeButton.setBackground(new java.awt.Color(0, 0, 0));
         homeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/home_white_18dp.png"))); // NOI18N
@@ -226,7 +235,6 @@ public class MainMenu extends java.awt.Frame {
                 homeButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(homeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 50, 70, 50));
 
         retrieveButton.setBackground(new java.awt.Color(0, 0, 0));
         retrieveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/retrieve_white_18dp.png"))); // NOI18N
@@ -235,7 +243,6 @@ public class MainMenu extends java.awt.Frame {
                 retrieveButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(retrieveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 105, 70, 50));
 
         favoriteButton.setBackground(new java.awt.Color(0, 0, 0));
         favoriteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/favorite_white_18dp.png"))); // NOI18N
@@ -244,7 +251,6 @@ public class MainMenu extends java.awt.Frame {
                 favoriteButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(favoriteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 160, 70, 50));
 
         searchButton.setBackground(new java.awt.Color(0, 0, 0));
         searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/search_white_18dp.png"))); // NOI18N
@@ -254,7 +260,6 @@ public class MainMenu extends java.awt.Frame {
                 searchButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(searchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 215, 70, 50));
 
         statisticsButton.setBackground(new java.awt.Color(0, 0, 0));
         statisticsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/statistics_white_18dp.png"))); // NOI18N
@@ -263,7 +268,6 @@ public class MainMenu extends java.awt.Frame {
                 statisticsButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(statisticsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 270, 70, 50));
 
         exitButton.setBackground(new java.awt.Color(0, 0, 0));
         exitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/exit_white_18dp.png"))); // NOI18N
@@ -272,10 +276,42 @@ public class MainMenu extends java.awt.Frame {
                 exitButtonActionPerformed(evt);
             }
         });
-        sideMenuBar.add(exitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 325, 70, 50));
 
         logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/app_logo_small.png"))); // NOI18N
-        sideMenuBar.add(logoLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 474, 80, 50));
+
+        javax.swing.GroupLayout sideMenuBarLayout = new javax.swing.GroupLayout(sideMenuBar);
+        sideMenuBar.setLayout(sideMenuBarLayout);
+        sideMenuBarLayout.setHorizontalGroup(
+            sideMenuBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(sideMenuBarLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(sideMenuBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(homeButton)
+                    .addComponent(retrieveButton)
+                    .addComponent(favoriteButton)
+                    .addComponent(searchButton)
+                    .addComponent(statisticsButton)
+                    .addComponent(exitButton)))
+        );
+        sideMenuBarLayout.setVerticalGroup(
+            sideMenuBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sideMenuBarLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(homeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(retrieveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(favoriteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(statisticsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         optionsBarPanel.setBackground(new java.awt.Color(21, 21, 21));
         optionsBarPanel.setLayout(new java.awt.CardLayout());
@@ -623,17 +659,22 @@ public class MainMenu extends java.awt.Frame {
      */
     private void backGroundPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backGroundPanelComponentResized
         // Τροποποίηση, μόνο σε περίπτωση που το παράθυρο γίνει μεγαλύτερο από το αρχικό
-        if(this.getBounds().width>=1064 || this.getBounds().height>=615){
+        System.out.println(this.getBounds().width+", "+this.getBounds().height);
+        if(this.getBounds().width>1064 || this.getBounds().height>613){
             // Οι διαστάσεις τις εικόνας μεταβάλλονται σε σχέση με το μήκος και πλάτος του παραθύρου
-            backGroundImage.setSize(this.getBounds().width-16, this.getBounds().height-79);
-            BufferedImage bi = new BufferedImage(backGroundImage.getWidth(), backGroundImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = (Graphics2D)bi.createGraphics();
-            g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY));
-            g2d.drawImage(bckgndImage.getImage(), 0, 0, backGroundImage.getWidth(), backGroundImage.getHeight(), null);
-            ImageIcon imageIcon = new ImageIcon(bi);
-            backGroundImage.setIcon(imageIcon);             
+            backGroundImage.setSize(this.getBounds().width-16, this.getBounds().height-77);
         }
+        else{
+            backGroundImage.setSize(1048, 536);            
+        }
+        // Επανασχεδιασμός του background image σύμφωνα με τις νέες διαστάσεις
+        BufferedImage bi = new BufferedImage(backGroundImage.getWidth(), backGroundImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = (Graphics2D)bi.createGraphics();
+        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING,
+        RenderingHints.VALUE_RENDER_QUALITY));
+        g2d.drawImage(bckgndImage.getImage(), 0, 0, backGroundImage.getWidth(), backGroundImage.getHeight(), null);
+        ImageIcon imageIcon = new ImageIcon(bi);
+        backGroundImage.setIcon(imageIcon);                    
     }//GEN-LAST:event_backGroundPanelComponentResized
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchButton*/
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
