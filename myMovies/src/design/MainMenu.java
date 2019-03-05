@@ -5,19 +5,33 @@ package design;
 
 import communication.CommunicationWorker;
 import controller.MovieController;
+//import entity.Movie;
 import java.awt.CardLayout;
 import java.awt.Color;
+//import java.awt.Dimension;
+//import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+//import java.beans.Statement;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+//import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+//import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+//import javax.swing.JScrollPane;
+//import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -68,9 +82,9 @@ public class MainMenu extends java.awt.Frame {
         // και θα εμφανίζει στοιχεία και εικόνα στην οθόνη //
         MovieController mc = new MovieController();
         // TODO: Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-        //Movie movie = mc.getMovie(260513); //ΠΡΟΣΟΧΗ! Αν η βάση δεδομένων είναι κενή, εδώ θα έχετε σφάλμα.
-        //movieTitle.setText(movie.getTitle());
-        //movieOverview.setText(movie.getOverview());
+//        Movie movie = mc.getMovie(260513); //ΠΡΟΣΟΧΗ! Αν η βάση δεδομένων είναι κενή, εδώ θα έχετε σφάλμα.
+  //      movieTitle.setText(movie.getTitle());
+    //    movieOverview.setText(movie.getOverview());
         URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
         Image image = ImageIO.read(url);
         ImageIcon icon = new ImageIcon(image);
@@ -168,6 +182,8 @@ public class MainMenu extends java.awt.Frame {
         jLabel3 = new javax.swing.JLabel();
         mainPanelStatistics = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        topTenTable = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(51, 51, 51));
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -392,6 +408,11 @@ public class MainMenu extends java.awt.Frame {
         topTenButton.setBackground(new java.awt.Color(0, 0, 0));
         topTenButton.setForeground(new java.awt.Color(0, 204, 102));
         topTenButton.setText("Οι Καλύτερες 10 Ταινίες");
+        topTenButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topTenButtonActionPerformed(evt);
+            }
+        });
         statisticsOptionsPanel.add(topTenButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, 240, 25));
 
         topTenPerListButton.setBackground(new java.awt.Color(0, 0, 0));
@@ -423,13 +444,16 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHomeLayout.setHorizontalGroup(
             mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelHomeLayout.createSequentialGroup()
-                .addContainerGap(177, Short.MAX_VALUE)
+                .addContainerGap(179, Short.MAX_VALUE)
                 .addComponent(posterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
                 .addGroup(mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(movieTitle))
-                .addGap(188, 188, 188))
+                    .addGroup(mainPanelHomeLayout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(movieTitle))
+                    .addGroup(mainPanelHomeLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(197, 197, 197))
         );
         mainPanelHomeLayout.setVerticalGroup(
             mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,9 +463,10 @@ public class MainMenu extends java.awt.Frame {
                     .addComponent(posterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(mainPanelHomeLayout.createSequentialGroup()
                         .addComponent(movieTitle)
-                        .addGap(18, 18, 18)
-                        .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         mainPanel.add(mainPanelHome, "homeCard");
@@ -456,21 +481,21 @@ public class MainMenu extends java.awt.Frame {
         mainPanelFavorite.setLayout(mainPanelFavoriteLayout);
         mainPanelFavoriteLayout.setHorizontalGroup(
             mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
+            .addGap(0, 952, Short.MAX_VALUE)
             .addGroup(mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelFavoriteLayout.createSequentialGroup()
-                    .addContainerGap(264, Short.MAX_VALUE)
+                    .addContainerGap(265, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(178, Short.MAX_VALUE)))
+                    .addContainerGap(179, Short.MAX_VALUE)))
         );
         mainPanelFavoriteLayout.setVerticalGroup(
             mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
+            .addGap(0, 448, Short.MAX_VALUE)
             .addGroup(mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelFavoriteLayout.createSequentialGroup()
-                    .addContainerGap(185, Short.MAX_VALUE)
+                    .addContainerGap(217, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addContainerGap(185, Short.MAX_VALUE)))
+                    .addContainerGap(217, Short.MAX_VALUE)))
         );
 
         mainPanel.add(mainPanelFavorite, "favoriteCard");
@@ -485,7 +510,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelSearch.setLayout(mainPanelSearchLayout);
         mainPanelSearchLayout.setHorizontalGroup(
             mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
+            .addGap(0, 952, Short.MAX_VALUE)
             .addGroup(mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(mainPanelSearchLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -494,7 +519,7 @@ public class MainMenu extends java.awt.Frame {
         );
         mainPanelSearchLayout.setVerticalGroup(
             mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
+            .addGap(0, 448, Short.MAX_VALUE)
             .addGroup(mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(mainPanelSearchLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -509,25 +534,55 @@ public class MainMenu extends java.awt.Frame {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("mainPanelStatistics: Εδώ μπορείτε να προσθέσετε πίνακες ή μηνύματα προς τον χρήστη");
 
+        topTenTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Όνομσ Ταινίας", "Βαθμολογία"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Double.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(topTenTable);
+
         javax.swing.GroupLayout mainPanelStatisticsLayout = new javax.swing.GroupLayout(mainPanelStatistics);
         mainPanelStatistics.setLayout(mainPanelStatisticsLayout);
         mainPanelStatisticsLayout.setHorizontalGroup(
             mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
-            .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
+                .addGap(0, 259, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(65, 65, 65)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 154, Short.MAX_VALUE))
         );
         mainPanelStatisticsLayout.setVerticalGroup(
             mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
-            .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
+                .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
+                        .addGap(125, 125, 125)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 174, Short.MAX_VALUE))
         );
 
         mainPanel.add(mainPanelStatistics, "statisticsCard");
@@ -560,7 +615,7 @@ public class MainMenu extends java.awt.Frame {
                 .addGap(10, 10, 10)
                 .addComponent(sideMenuBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(backGroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
+                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE))
         );
 
         add(backGroundPanel, java.awt.BorderLayout.CENTER);
@@ -606,6 +661,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(true);
         mainPanelSearch.setVisible(false);
+        topTenTable.setVisible(false);
     }//GEN-LAST:event_statisticsButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
@@ -626,7 +682,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(true);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);
+        mainPanelSearch.setVisible(false);      
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
     /* This method is used to scale the background image when jPanel dimensions change */
@@ -651,7 +707,61 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(true);
     }//GEN-LAST:event_searchButtonActionPerformed
-
+    //δημιουργία μεθόδου για πραγματοποίηση του CONNECTION με την βάση δεδομένων
+    public Connection getConnection(){
+        Connection con=null;
+        try{
+            con=DriverManager.getConnection("jdbc:derby://localhost:1527/myMouvies","root","admin");
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return con;
+    }
+    
+    private void topTenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenButtonActionPerformed
+        // TODO add your handling code here:
+       topTenTable.setVisible(true);        //Εμφάνιση πίνακα 10 καλύτερων ταινιών
+       DefaultTableModel tmodel;   //Δημιοργία default Table για την πρόσθεση στοιχείων στον πίνακα που δημιοργήσαμε
+       tmodel=(DefaultTableModel) topTenTable.getModel();
+       
+       try{
+       Connection con = getConnection();
+       java.sql.Statement pst = con.createStatement();
+       ResultSet rs = pst.executeQuery("SELECT * FROM movie");
+       
+       ArrayList<String> stListO=new ArrayList<String>();  //Δημιουργία λίστας με τα ονόματα των Ταινιών από MOVIE δαταβασε
+       ArrayList<Double> stListN=new ArrayList<Double>();  //Δημιουργία λίστας με τα RATINGS των Ταινιών
+       
+            while(rs.next()){    
+                    stListO.add(rs.getString("TITLE"));
+                    stListN.add(rs.getDouble("RATING"));
+            }
+            int n = stListN.size();         //Χρήση bubble sort για ταξινόμηση των λιστών stListO και stListN 
+                for (int i = 0; i < n; i++) {
+                    for (int j = 1; j < (n - i); j++) {
+                        if (stListN.get(j - 1) < stListN.get(j)) {
+//Κατανέμουμε κατά φθίνουσα με RATINGS
+                        double tempN = stListN.get(j - 1);
+                        stListN.set(j-1, stListN.get(j));
+                        stListN.set(j,tempN);
+//Κατανέμουμε κατά φθίνουσα με TITLES σύμφωνα με τα RATINGS
+                        String tempS = stListO.get(j - 1);
+                        stListO.set(j-1, stListO.get(j));
+                        stListO.set(j,tempS);
+                        }
+                    }
+                }
+//Εισαγωγή λίστας καλύτερων 10 ταινιών στον πίνακα που δημιουργήσαμε.
+            for(int i=0; i<10; i++){
+                tmodel.setValueAt(stListO.get(i), i, 0);
+                tmodel.setValueAt(stListN.get(i), i, 1);
+            }
+       }
+       catch(Exception e){
+           JOptionPane.showMessageDialog(null, e);
+       }
+       
+    }//GEN-LAST:event_topTenButtonActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -675,6 +785,7 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JScrollPane listScrollPane;
     private javax.swing.JLabel logoLabel;
@@ -697,6 +808,7 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JLabel tmdbLabel;
     private javax.swing.JButton topTenButton;
     private javax.swing.JButton topTenPerListButton;
+    private javax.swing.JTable topTenTable;
     private javax.swing.JLayeredPane upperBar;
     // End of variables declaration//GEN-END:variables
 }
