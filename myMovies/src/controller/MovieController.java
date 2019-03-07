@@ -3,8 +3,14 @@
  */
 package controller;
 
+import entity.FavoriteList;
+import entity.Genre;
 import entity.Movie;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.persistence.Query;
 
 /**
@@ -24,10 +30,55 @@ public class MovieController extends MainController{
         }
         em.getTransaction().commit();
     }
+    
     public Movie getMovie(int id){
         Query q = em.createNamedQuery("Movie.findById");
         q.setParameter("id", id);
         return (Movie)q.getSingleResult();
-    }    
+    }
+    
+    public Movie getMovieByTtitle(String title){
+        Query q = em.createNamedQuery("Movie.findByTitle");
+        q.setParameter("title", title);
+        return (Movie)q.getSingleResult();               
+    }
+    
+    public void updateMovie(int movieId, FavoriteList favoriteList){
+        Movie movie = em.find(Movie.class, movieId);
+        em.getTransaction().begin();
+        movie.setFavoriteListId(favoriteList);
+        em.getTransaction().commit();
+    }
+    
+    public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre){
+        Query q = em.createNamedQuery("Movie.findYearAndGenre");
+        Calendar calendar = new GregorianCalendar(selectedYear,0,1);
+        Date date1 = calendar.getTime();
+        calendar.set(Calendar.MONTH, 11);
+        calendar.set(Calendar.DAY_OF_MONTH, 31);
+        Date date2 = calendar.getTime();
+        q.setParameter("date1", date1);
+        q.setParameter("date2", date2);
+        q.setParameter("genreId", genre);
+        // Μετατροπή List σε ArrayList
+        return listToArrayList(q.getResultList());
+    } 
+
+    public ArrayList<Movie> getMoviesForList(FavoriteList favoriteList){
+        Query q = em.createNamedQuery("Movie.findByFavoriteList");
+        q.setParameter("favoriteListId", favoriteList);
+        // Μετατροπή List σε ArrayList  
+        return listToArrayList(q.getResultList());
+    } 
+ 
+    // Μέθοδος μετατροπής List σε ArrayList      
+    private ArrayList<Movie> listToArrayList(List<Movie> movies){
+        ArrayList<Movie> m = new ArrayList<>();
+        for(int i = 0; i < movies.size(); i++){
+            m.add(movies.get(i));
+        }
+        return m;       
+    }
+
     
 }

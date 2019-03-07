@@ -4,10 +4,11 @@
 package design;
 
 import java.awt.event.KeyEvent;
-// Γιώργο, αυτή τη βιβλιοθήκη δεν την βρήκα και έβαλα την απο πάνω
-//import com.sun.glass.events.KeyEvent;
 import communication.CommunicationWorker;
+import controller.FavoriteListController;
 import controller.MovieController;
+import entity.FavoriteList;
+import entity.Genre;
 import entity.Movie;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -20,11 +21,17 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.persistence.NoResultException;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -32,7 +39,12 @@ import javax.swing.JOptionPane;
  */
 public class MainMenu extends java.awt.Frame {
 
-    ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
+    private int userInput;  // κρατάει τη χρονιά που εισάγει ο χρήστης στην αναζήτηση ταινιών
+    private MovieController mc = new MovieController();
+    private FavoriteListController flc = new FavoriteListController();
+    private ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
+    //private String genreSelection;
+    private int comboBoxActionCounter;     // Μετρητής πρόσβασης στη μέθοδο favoriteListComboBoxActionPerformed
     /**
      * Creates new form MainMenu
      * @throws java.net.MalformedURLException
@@ -59,7 +71,6 @@ public class MainMenu extends java.awt.Frame {
          * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
          */
         try{
-            MovieController mc = new MovieController();
             // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
             Movie movie = mc.getMovie(9806);
             movieTitle.setText(movie.getTitle());
@@ -81,6 +92,15 @@ public class MainMenu extends java.awt.Frame {
         rolloverButton(favoriteButton);
         rolloverButton(exitButton);
         rolloverButton(searchButton);
+        
+        fillFavoriteList();
+        fillFavoriteListComboBox();
+        // Αρχικά το jComboBox είναι κενό        
+        favoriteListComboBox.setSelectedIndex(-1);
+        // Αρχικά το jComboBox είναι κενό
+        genreComboBox.setSelectedIndex(-1);  
+        jScrollPane1.setVisible(false);
+        movieTableScrollPane.setVisible(false);
     }
 
     /* Μέθοδος διαχείρισης εμφάνισης jButton σε δυναμικό περιβάλλον */
@@ -128,9 +148,10 @@ public class MainMenu extends java.awt.Frame {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        myMoviesPUEntityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("myMoviesPU").createEntityManager();
-        genreQuery = java.beans.Beans.isDesignTime() ? null : myMoviesPUEntityManager.createQuery("SELECT g.name FROM Genre g");
+        myMoviesPUEntityManager0 = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("myMoviesPU").createEntityManager();
+        genreQuery = java.beans.Beans.isDesignTime() ? null : myMoviesPUEntityManager0.createQuery("SELECT g FROM Genre g");
         genreList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : genreQuery.getResultList();
+        genreRenderer1 = new mymovies.GenreRenderer();
         upperBar = new javax.swing.JLayeredPane();
         infoLabel = new javax.swing.JLabel();
         tmdbLabel = new javax.swing.JLabel();
@@ -153,10 +174,15 @@ public class MainMenu extends java.awt.Frame {
         listScrollPane = new javax.swing.JScrollPane();
         favoriteList = new javax.swing.JList<>();
         searchOptionsPanel = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField2 = new javax.swing.JTextField();
-        createListButton1 = new javax.swing.JButton();
-        createListButton2 = new javax.swing.JButton();
+        genreLabel = new javax.swing.JLabel();
+        genreComboBox = new javax.swing.JComboBox<>();
+        yearLabel1 = new javax.swing.JLabel();
+        setYearText = new javax.swing.JTextField();
+        searchMoviesButton = new javax.swing.JButton();
+        clearContentsButton = new javax.swing.JButton();
+        addToListLabel = new javax.swing.JLabel();
+        favoriteListComboBox = new javax.swing.JComboBox<>();
+        deleteFromListButton = new javax.swing.JButton();
         statisticsOptionsPanel = new javax.swing.JPanel();
         topTenButton = new javax.swing.JButton();
         topTenPerListButton = new javax.swing.JButton();
@@ -167,9 +193,11 @@ public class MainMenu extends java.awt.Frame {
         movieScrollPane = new javax.swing.JScrollPane();
         movieOverview = new javax.swing.JTextArea();
         mainPanelFavorite = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        favoriteListTable = new javax.swing.JTable();
         mainPanelSearch = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        movieTableScrollPane = new javax.swing.JScrollPane();
+        searchMovieTable = new javax.swing.JTable();
         mainPanelStatistics = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -198,13 +226,13 @@ public class MainMenu extends java.awt.Frame {
         upperBarLayout.setHorizontalGroup(
             upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(upperBarLayout.createSequentialGroup()
-                .addContainerGap(515, Short.MAX_VALUE)
+                .addContainerGap(513, Short.MAX_VALUE)
                 .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
                 .addContainerGap(452, Short.MAX_VALUE))
             .addGroup(upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(upperBarLayout.createSequentialGroup()
                     .addComponent(tmdbLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 943, Short.MAX_VALUE)))
+                    .addGap(0, 941, Short.MAX_VALUE)))
         );
         upperBarLayout.setVerticalGroup(
             upperBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,7 +337,7 @@ public class MainMenu extends java.awt.Frame {
                 .addComponent(statisticsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addComponent(exitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -322,7 +350,7 @@ public class MainMenu extends java.awt.Frame {
         homeOptionsPanel.setLayout(homeOptionsPanelLayout);
         homeOptionsPanelLayout.setHorizontalGroup(
             homeOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 961, Short.MAX_VALUE)
+            .addGap(0, 959, Short.MAX_VALUE)
         );
         homeOptionsPanelLayout.setVerticalGroup(
             homeOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -336,19 +364,34 @@ public class MainMenu extends java.awt.Frame {
         createListButton.setBackground(new java.awt.Color(0, 0, 0));
         createListButton.setForeground(new java.awt.Color(0, 204, 102));
         createListButton.setText("Δημιουργία");
+        createListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createListButtonActionPerformed(evt);
+            }
+        });
 
         editListButton.setBackground(new java.awt.Color(0, 0, 0));
         editListButton.setForeground(new java.awt.Color(0, 204, 102));
         editListButton.setText("Επεξεργασία");
+        editListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editListButtonActionPerformed(evt);
+            }
+        });
 
         deleteListButton.setBackground(new java.awt.Color(0, 0, 0));
         deleteListButton.setForeground(new java.awt.Color(0, 204, 102));
         deleteListButton.setText("Διαγραφή");
+        deleteListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteListButtonActionPerformed(evt);
+            }
+        });
 
-        favoriteList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        favoriteList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                favoriteListMousePressed(evt);
+            }
         });
         listScrollPane.setViewportView(favoriteList);
 
@@ -388,39 +431,77 @@ public class MainMenu extends java.awt.Frame {
         searchOptionsPanel.setBackground(new java.awt.Color(21, 21, 21));
         searchOptionsPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        genreLabel.setBackground(new java.awt.Color(21, 21, 21));
+        genreLabel.setForeground(new java.awt.Color(255, 255, 255));
+        genreLabel.setText("Είδος Ταινίας");
+        searchOptionsPanel.add(genreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 110, 20));
+
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${resultList}");
-        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, genreQuery, eLProperty, jComboBox1);
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, genreQuery, eLProperty, genreComboBox);
         bindingGroup.addBinding(jComboBoxBinding);
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, genreRenderer1, org.jdesktop.beansbinding.ObjectProperty.create(), genreComboBox, org.jdesktop.beansbinding.BeanProperty.create("renderer"));
+        bindingGroup.addBinding(binding);
 
-        searchOptionsPanel.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(249, 40, -1, -1));
+        searchOptionsPanel.add(genreComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 130, -1));
 
-        jTextField2.setText("Έτος Κυκλοφορίας");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        yearLabel1.setBackground(new java.awt.Color(21, 21, 21));
+        yearLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        yearLabel1.setText("Έτος Κυκλοφορίας");
+        searchOptionsPanel.add(yearLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, 110, 20));
+
+        setYearText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                setYearTextActionPerformed(evt);
             }
         });
-        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+        setYearText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField2KeyTyped(evt);
+                setYearTextKeyTyped(evt);
             }
         });
-        searchOptionsPanel.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(429, 42, 115, -1));
+        searchOptionsPanel.add(setYearText, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 115, 30));
 
-        createListButton1.setBackground(new java.awt.Color(0, 0, 0));
-        createListButton1.setForeground(new java.awt.Color(0, 204, 102));
-        createListButton1.setText("Αναζήτηση");
-        searchOptionsPanel.add(createListButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 40, 180, 25));
-
-        createListButton2.setBackground(new java.awt.Color(0, 0, 0));
-        createListButton2.setForeground(new java.awt.Color(0, 204, 102));
-        createListButton2.setText("Καθαρισμός Κριτηρίων");
-        createListButton2.addActionListener(new java.awt.event.ActionListener() {
+        searchMoviesButton.setBackground(new java.awt.Color(0, 0, 0));
+        searchMoviesButton.setForeground(new java.awt.Color(0, 204, 102));
+        searchMoviesButton.setText("Αναζήτηση");
+        searchMoviesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createListButton2ActionPerformed(evt);
+                searchMoviesButtonActionPerformed(evt);
             }
         });
-        searchOptionsPanel.add(createListButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 70, 180, 25));
+        searchOptionsPanel.add(searchMoviesButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 40, 180, 25));
+
+        clearContentsButton.setBackground(new java.awt.Color(0, 0, 0));
+        clearContentsButton.setForeground(new java.awt.Color(0, 204, 102));
+        clearContentsButton.setText("Καθαρισμός Κριτηρίων");
+        clearContentsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearContentsButtonActionPerformed(evt);
+            }
+        });
+        searchOptionsPanel.add(clearContentsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 70, 180, 25));
+
+        addToListLabel.setBackground(new java.awt.Color(21, 21, 21));
+        addToListLabel.setForeground(new java.awt.Color(255, 255, 255));
+        addToListLabel.setText("Προσθήκη σε Λίστα");
+        searchOptionsPanel.add(addToListLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 10, 120, 20));
+
+        favoriteListComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                favoriteListComboBoxActionPerformed(evt);
+            }
+        });
+        searchOptionsPanel.add(favoriteListComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 40, 160, -1));
+
+        deleteFromListButton.setBackground(new java.awt.Color(0, 0, 0));
+        deleteFromListButton.setForeground(new java.awt.Color(0, 204, 102));
+        deleteFromListButton.setText("Αφαίρεση από Λίστα");
+        deleteFromListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteFromListButtonActionPerformed(evt);
+            }
+        });
+        searchOptionsPanel.add(deleteFromListButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 40, 180, 25));
 
         optionsBarPanel.add(searchOptionsPanel, "searchPanel");
 
@@ -461,7 +542,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHomeLayout.setHorizontalGroup(
             mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelHomeLayout.createSequentialGroup()
-                .addContainerGap(177, Short.MAX_VALUE)
+                .addContainerGap(175, Short.MAX_VALUE)
                 .addComponent(posterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39)
                 .addGroup(mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -479,66 +560,65 @@ public class MainMenu extends java.awt.Frame {
                         .addComponent(movieTitle)
                         .addGap(18, 18, 18)
                         .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         mainPanel.add(mainPanelHome, "homeCard");
         mainPanelHome.getAccessibleContext().setAccessibleName("");
 
         mainPanelFavorite.setBackground(new java.awt.Color(102, 102, 102));
+        mainPanelFavorite.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("mainPanelFavorite: Εδώ μπορείτε να προσθέσετε πίνακες ή μηνύματα προς τον χρήστη");
+        favoriteListTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(favoriteListTable);
 
-        javax.swing.GroupLayout mainPanelFavoriteLayout = new javax.swing.GroupLayout(mainPanelFavorite);
-        mainPanelFavorite.setLayout(mainPanelFavoriteLayout);
-        mainPanelFavoriteLayout.setHorizontalGroup(
-            mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
-            .addGroup(mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelFavoriteLayout.createSequentialGroup()
-                    .addContainerGap(264, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(178, Short.MAX_VALUE)))
-        );
-        mainPanelFavoriteLayout.setVerticalGroup(
-            mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
-            .addGroup(mainPanelFavoriteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelFavoriteLayout.createSequentialGroup()
-                    .addContainerGap(185, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addContainerGap(185, Short.MAX_VALUE)))
-        );
+        mainPanelFavorite.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         mainPanel.add(mainPanelFavorite, "favoriteCard");
         mainPanelFavorite.getAccessibleContext().setAccessibleName("");
 
         mainPanelSearch.setBackground(new java.awt.Color(102, 102, 102));
+        mainPanelSearch.setLayout(new java.awt.BorderLayout());
 
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("mainPanelSearch: Εδώ μπορείτε να προσθέσετε πίνακες ή μηνύματα προς τον χρήστη");
+        searchMovieTable.setBackground(new java.awt.Color(48, 48, 48));
+        searchMovieTable.setForeground(new java.awt.Color(255, 255, 255));
+        searchMovieTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        javax.swing.GroupLayout mainPanelSearchLayout = new javax.swing.GroupLayout(mainPanelSearch);
-        mainPanelSearch.setLayout(mainPanelSearchLayout);
-        mainPanelSearchLayout.setHorizontalGroup(
-            mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
-            .addGroup(mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelSearchLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        mainPanelSearchLayout.setVerticalGroup(
-            mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
-            .addGroup(mainPanelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelSearchLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+            },
+            new String [] {
+                "Τλιτλος Ταινίας", "Βαθμολογία", "Περιγραφή"
+            }
+        ));
+        searchMovieTable.setGridColor(new java.awt.Color(0, 154, 57));
+        searchMovieTable.setSelectionBackground(new java.awt.Color(0, 204, 102));
+        searchMovieTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        searchMovieTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                searchMovieTableMousePressed(evt);
+            }
+        });
+        movieTableScrollPane.setViewportView(searchMovieTable);
+        if (searchMovieTable.getColumnModel().getColumnCount() > 0) {
+            searchMovieTable.getColumnModel().getColumn(0).setMinWidth(250);
+            searchMovieTable.getColumnModel().getColumn(0).setPreferredWidth(250);
+            searchMovieTable.getColumnModel().getColumn(0).setMaxWidth(350);
+            searchMovieTable.getColumnModel().getColumn(1).setMinWidth(90);
+            searchMovieTable.getColumnModel().getColumn(1).setPreferredWidth(90);
+            searchMovieTable.getColumnModel().getColumn(1).setMaxWidth(90);
+        }
+
+        mainPanelSearch.add(movieTableScrollPane, java.awt.BorderLayout.CENTER);
 
         mainPanel.add(mainPanelSearch, "card5");
 
@@ -551,21 +631,21 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setLayout(mainPanelStatisticsLayout);
         mainPanelStatisticsLayout.setHorizontalGroup(
             mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 950, Short.MAX_VALUE)
+            .addGap(0, 948, Short.MAX_VALUE)
             .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 224, Short.MAX_VALUE)
                     .addComponent(jLabel4)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 224, Short.MAX_VALUE)))
         );
         mainPanelStatisticsLayout.setVerticalGroup(
             mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 386, Short.MAX_VALUE)
+            .addGap(0, 402, Short.MAX_VALUE)
             .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 193, Short.MAX_VALUE)
                     .addComponent(jLabel4)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 193, Short.MAX_VALUE)))
         );
 
         mainPanel.add(mainPanelStatistics, "statisticsCard");
@@ -585,20 +665,20 @@ public class MainMenu extends java.awt.Frame {
                         .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
             .addGroup(backGroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 1048, Short.MAX_VALUE))
+                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 1046, Short.MAX_VALUE))
         );
         backGroundPanelLayout.setVerticalGroup(
             backGroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backGroundPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(optionsBarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(backGroundPanelLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(sideMenuBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(backGroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
+                .addComponent(backGroundImage, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE))
         );
 
         add(backGroundPanel, java.awt.BorderLayout.CENTER);
@@ -678,6 +758,8 @@ public class MainMenu extends java.awt.Frame {
     }//GEN-LAST:event_backGroundPanelComponentResized
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchButton*/
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        fillFavoriteListComboBox();     // Ενημέρωση του favoriteListComboBox
+        favoriteListComboBox.setSelectedIndex(-1);
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "searchPanel");
         mainPanelHome.setVisible(false);
@@ -686,49 +768,259 @@ public class MainMenu extends java.awt.Frame {
         mainPanelSearch.setVisible(true);
     }//GEN-LAST:event_searchButtonActionPerformed
 
-    private void createListButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createListButton2ActionPerformed
-        jTextField2.setText("");
-        jComboBox1.setSelectedIndex(-1);
-    }//GEN-LAST:event_createListButton2ActionPerformed
+    private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
+        setYearText.setText("");
+        genreComboBox.setSelectedIndex(-1);
+    }//GEN-LAST:event_clearContentsButtonActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void setYearTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setYearTextActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_setYearTextActionPerformed
 
-    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+    private void setYearTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_setYearTextKeyTyped
         char c=evt.getKeyChar();
         if(!(Character.isDigit(c)||c==KeyEvent.VK_BACK_SPACE||c==KeyEvent.VK_DELETE)){
             getToolkit().beep();
             evt.consume();
         }
-    }//GEN-LAST:event_jTextField2KeyTyped
+    }//GEN-LAST:event_setYearTextKeyTyped
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton*/
+    private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
+        /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
+        try{
+            userInput = Integer.parseInt(setYearText.getText());  
+        }
+        catch(NumberFormatException nfe){
+            userInput = 0;
+        }
+        /* 
+         * Έλεγχος ορθότητας επιλεγμένων δεδομένων για ανεύρεση ταινιών και εμφάνιση
+         * δεδομένων στον πίνακα searchMovieTable 
+         */
+        if(genreComboBox.getSelectedItem() != null && userInput >= 2000 && userInput <= 2030 && !setYearText.getText().equals("")){
+            Genre g = (Genre)genreComboBox.getSelectedItem();
+            DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
+            tModel.setRowCount(0);
+            int colCount = searchMovieTable.getColumnCount();
+            Object[] ob = new Object[colCount];
+            List<Movie> movieList = mc.getSelectedMovies(userInput, g);
+            for(Movie m : movieList){
+                for(int row = 0; row < movieList.size(); row++){
+                    ob[0] = m.getTitle();
+                    ob[1] = m.getRating();
+                    ob[2] = m.getOverview();
+                }
+                tModel.addRow(ob);
+            }
+            mainPanelSearch.setBackground(new Color(102,102,102));
+            movieTableScrollPane.setVisible(true);
+        }
+        else{
+           JOptionPane.showMessageDialog(null, "Επιλέξτε ένα από τα διαθέσιμα είδη και εισάγετε έτος (2000-2030)", "Μη έγκυρες τιμές", JOptionPane.INFORMATION_MESSAGE); 
+        }
+    }//GEN-LAST:event_searchMoviesButtonActionPerformed
 
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί createListButton*/
+    private void createListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createListButtonActionPerformed
+        // Δημιουργία νέου παραθύρου διαλόγου
+        CreateNewList newList = new CreateNewList(this, true);
+        newList.setLocationRelativeTo(this);
+        newList.setVisible(true);
+        // Εάν πατήθηκε το κουμπί αποθήκευση, προχωράμε
+        if(newList.getReturnStatus() == 1){
+            JTextField t = newList.getUserText();   // Τα δεδομένα που εισήγαγε ο χρήστης
+            FavoriteList fl = new FavoriteList();
+            System.out.println(t.getText()+", returnedStatus = "+newList.getReturnStatus());
+            fl.setName(t.getText());
+            flc.storeFavoriteToDataBase(fl);        // Αποθήκευση στη βάση δεδομένων
+            fillFavoriteList();    
+        }
+    }//GEN-LAST:event_createListButtonActionPerformed
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteListButton*/
+    private void deleteListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteListButtonActionPerformed
+        if(favoriteList.getSelectedValuesList() != null){
+            // Δημιουργία jOptionPane για προειδοποίηση διαγραφής
+            Object[] options = {"Ναι","Ακύρωση"};
+            int n = JOptionPane.showOptionDialog(null,
+            "Πρόκειται να διαγράψετε την Λίστα Αγαπημένων. "
+            +"Θέλετε να συνεχίσετε;",
+            "Προειδοποίηση!",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,options,options[1]);
+            // Εάν επιλέχτηκε "Ναι", προχωράμε στη διαγραφή
+            if(n == 0){
+                for(int i =0; i<favoriteList.getSelectedValuesList().size(); i++){
+                    // Αρχικά θέτουμε null τα αντίστοιχα favoriteListId στις ταινίες
+                    FavoriteList fl = flc.getFavoriteListByName(favoriteList.getSelectedValuesList().get(i));
+                    ArrayList<Movie> movies = mc.getMoviesForList(fl);
+                    fl = null;
+                    for(int j = 0; j < movies.size(); j++){
+                        mc.updateMovie(movies.get(j).getId(), fl);
+                    }
+                    // Έπειτα γίνεται διαγραφή της λίστας από τη βάση δεδομένων
+                    flc.deleteFavoriteFromDataBase(favoriteList.getSelectedValuesList().get(i));                    
+                }               
+            }
+        }
+        fillFavoriteList();        
+    }//GEN-LAST:event_deleteListButtonActionPerformed
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί editListButton*/
+    private void editListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editListButtonActionPerformed
+        // TODO: Να θέσω πρώτα null τις αντίστοιχες ταινίες
+        // Ελέγχουμε εάν επιλέχθηκε κάποιο στοιχείο από τη λίστα αγαπημένων
+        if(favoriteList.getSelectedValue() == null){
+            JOptionPane.showMessageDialog(null, "Δεν επιλέχθηκε κάποια Λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);        
+        }
+        // Έλεγχος εάν επιλέχθηκαν περισσότερα από ένα στοιχεία από τη λίστα
+        else if(favoriteList.getSelectedValuesList().size() > 1){
+            JOptionPane.showMessageDialog(null, "Παρακαλώ επιλέξτε μια μόνο Λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);           
+        }
+        else{
+            // Δημιουργία νέου παραθύρου διαλόγου, όμοιο με αυτό της Δημιουργίας            
+            CreateNewList newList = new CreateNewList(this, true);
+            newList.setLocationRelativeTo(this);
+            JTextField t = new JTextField();
+            t.setText(favoriteList.getSelectedValue());
+            newList.setUserText(t);
+            newList.setVisible(true);
+            if(newList.getReturnStatus() == 1){
+                String oldName = favoriteList.getSelectedValue();
+                flc.deleteFavoriteFromDataBase(oldName);
+                t = newList.getUserText();
+                FavoriteList fl = new FavoriteList();
+                fl.setName(t.getText());
+                flc.storeFavoriteToDataBase(fl);
+                fillFavoriteList();    
+            }            
+        }
+           
+    }//GEN-LAST:event_editListButtonActionPerformed
+
+    private void deleteFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFromListButtonActionPerformed
+        // TODO add your handling code here:
+        if(favoriteListComboBox.getSelectedItem() != null){
+            int row = searchMovieTable.getSelectedRow();
+            String title = (String)searchMovieTable.getValueAt(row, 0);
+            Movie m = mc.getMovieByTtitle(title);  
+            FavoriteList fl = null;
+            mc.updateMovie(m.getId(), fl);
+            favoriteListComboBox.setSelectedIndex(-1);
+           JOptionPane.showMessageDialog(null, "Η ταινία αφαιρέθηκε από τη λίστα", "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE);             
+        }                 
+    }//GEN-LAST:event_deleteFromListButtonActionPerformed
+    /* Μέθοδος προσθήκης σε λίστα, μιας επιλεγμένης ταινίας */
+    private void favoriteListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteListComboBoxActionPerformed
+        // Έλεγχος αν υπάρχει εγγραφή στον πίνακα, αν επιλέχθηκε στοιχείο στο comboBox και αν η μέθοδος κλήθηκε από τον χρήστη
+        comboBoxActionCounter++;
+        if(searchMovieTable.getRowCount() != 0 && favoriteListComboBox.getSelectedItem() != null && comboBoxActionCounter > 0){            
+            int row = searchMovieTable.getSelectedRow();
+            String title = (String)searchMovieTable.getValueAt(row, 0);
+            Movie m = mc.getMovieByTtitle(title);           
+            FavoriteList fl = flc.getFavoriteListByName((String)favoriteListComboBox.getSelectedItem());
+            mc.updateMovie(m.getId(), fl);
+            JOptionPane.showMessageDialog(null, "Η ταινία "+title+" προστέθηκε στη λίστα "+fl.getName()
+                    , "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE); 
+            comboBoxActionCounter = 0;      // Επαναφορά μετρητή
+        }
+    }//GEN-LAST:event_favoriteListComboBoxActionPerformed
+
+   /* Μέθοδος εμφάνισης πίνακα με τις ταινίες που ανήκουν στην επιλεγμένη λίστα */
+    private void favoriteListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_favoriteListMousePressed
+        // Έλεγχος αν επιλέχθηκε κάποια λίστα
+        System.out.println("Mpike");
+        if(favoriteList.getSelectedValue() != null){
+            FavoriteList fl = flc.getFavoriteListByName(favoriteList.getSelectedValue());
+            DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
+            tModel.setRowCount(0);
+            int colCount = searchMovieTable.getColumnCount();
+            Object[] ob = new Object[colCount];
+            List<Movie> movieList = mc.getMoviesForList(fl);
+            for(Movie m : movieList){
+                for(int row = 0; row < movieList.size(); row++){
+                    ob[0] = m.getTitle();
+                    ob[1] = m.getRating();
+                    ob[2] = m.getOverview();
+                }
+                tModel.addRow(ob);
+            }
+            favoriteListTable.setModel(tModel);
+            mainPanelFavorite.setBackground(new Color(102,102,102));
+            jScrollPane1.setVisible(true);
+        }
+    }//GEN-LAST:event_favoriteListMousePressed
+
+    private void searchMovieTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMovieTableMousePressed
+        checkSelectedRecordFromTable(); 
+    }//GEN-LAST:event_searchMovieTableMousePressed
+
+   /* Ανανέωση των περιεχομένων που εμφανίζονται στην jList favoriteList */
+    private void fillFavoriteList(){
+        FavoriteList fl;
+        DefaultListModel m = new DefaultListModel();
+        List fList = flc.getFavoriteList();
+        for(int i = 0; i<fList.size(); i++){
+            fl = (FavoriteList)fList.get(i);
+            m.add(i, fl.getName());
+        }
+        favoriteList.setModel(m);
+    }
+    /* Ανανέωση των περιεχομένων που εμφανίζονται στο jComboBox favoriteListComboBox */    
+    private void fillFavoriteListComboBox(){
+        FavoriteList fl;
+        DefaultComboBoxModel m = new DefaultComboBoxModel();
+        List fList = flc.getFavoriteList();
+        for(int i = 0; i < fList.size(); i++){
+            fl = (FavoriteList)fList.get(i);
+            m.addElement(fl.getName());
+        }
+        favoriteListComboBox.setModel(m);
+    }
+    /* Έλεγχος της επιλεγμένης εγγραφής στον πίνακα movieTable */    
+    public void checkSelectedRecordFromTable(){
+        comboBoxActionCounter = -1;
+        int row = searchMovieTable.getSelectedRow();
+        System.out.println(row);
+        String title = (String)searchMovieTable.getValueAt(row, 0);
+        System.out.println(title);
+        Movie m = mc.getMovieByTtitle(title); 
+        if(m.getFavoriteListId() != null){
+            favoriteListComboBox.setSelectedItem(m.getFavoriteListId().getName());
+        }
+        else{
+            favoriteListComboBox.setSelectedIndex(-1);  
+        }
+        
+    }
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel addToListLabel;
     private javax.swing.JLabel backGroundImage;
     private javax.swing.JPanel backGroundPanel;
+    private javax.swing.JButton clearContentsButton;
     private javax.swing.JButton createListButton;
-    private javax.swing.JButton createListButton1;
-    private javax.swing.JButton createListButton2;
+    private javax.swing.JButton deleteFromListButton;
     private javax.swing.JButton deleteListButton;
     private javax.swing.JButton editListButton;
     private javax.swing.JButton exitButton;
     private javax.swing.JButton favoriteButton;
     private javax.swing.JList<String> favoriteList;
+    private javax.swing.JComboBox<String> favoriteListComboBox;
+    private javax.swing.JTable favoriteListTable;
     private javax.swing.JPanel favoriteOptionsPanel;
+    private javax.swing.JComboBox<String> genreComboBox;
+    private javax.swing.JLabel genreLabel;
     private java.util.List<entity.Genre> genreList;
     private javax.persistence.Query genreQuery;
+    private mymovies.GenreRenderer genreRenderer1;
     private javax.swing.JButton homeButton;
     private javax.swing.JPanel homeOptionsPanel;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane listScrollPane;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPanel mainPanel;
@@ -738,13 +1030,17 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JPanel mainPanelStatistics;
     private javax.swing.JTextArea movieOverview;
     private javax.swing.JScrollPane movieScrollPane;
+    private javax.swing.JScrollPane movieTableScrollPane;
     private javax.swing.JLabel movieTitle;
-    private javax.persistence.EntityManager myMoviesPUEntityManager;
+    private javax.persistence.EntityManager myMoviesPUEntityManager0;
     private javax.swing.JPanel optionsBarPanel;
     private javax.swing.JLabel posterLabel;
     private javax.swing.JButton retrieveButton;
     private javax.swing.JButton searchButton;
+    private javax.swing.JTable searchMovieTable;
+    private javax.swing.JButton searchMoviesButton;
     private javax.swing.JPanel searchOptionsPanel;
+    private javax.swing.JTextField setYearText;
     private javax.swing.JPanel sideMenuBar;
     private javax.swing.JButton statisticsButton;
     private javax.swing.JPanel statisticsOptionsPanel;
@@ -752,6 +1048,7 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JButton topTenButton;
     private javax.swing.JButton topTenPerListButton;
     private javax.swing.JLayeredPane upperBar;
+    private javax.swing.JLabel yearLabel1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

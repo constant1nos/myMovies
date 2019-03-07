@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controller.FavoriteListController;
 import entity.Genre;
 import entity.Movie;
 import java.beans.PropertyChangeEvent;
@@ -78,11 +79,13 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         publish("Αρχικοποίηση...");
         GenreController gc = new GenreController();
         MovieController mc = new MovieController();
+       FavoriteListController flc = new FavoriteListController();
         setProgress(10);
         publish("Διαγραφή δεδομένων από τη βάση...");
         // Διαγραφή δεδομένων από τη βάση
         gc.deleteFromDataBase("Genre.deleteAll");
         mc.deleteFromDataBase("Movie.deleteAll");
+        flc.deleteFromDataBase("FavoriteList.deleteAll");
         // Αποθήκευση δεδομένων στη βάση
         setProgress(30);
         publish("Ανάκτηση ειδών ταινιών...");
