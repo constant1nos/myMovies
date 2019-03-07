@@ -724,6 +724,7 @@ public class MainMenu extends java.awt.Frame {
     }//GEN-LAST:event_retrieveButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton*/
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
+        fillFavoriteList();
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "favoritePanel");
         mainPanelHome.setVisible(false);
