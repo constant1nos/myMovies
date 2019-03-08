@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.persistence.NoResultException;
 import javax.swing.DefaultComboBoxModel;
@@ -40,103 +42,21 @@ import javax.swing.table.DefaultTableModel;
 public class MainMenu extends java.awt.Frame {
 
     private int userInput;  // κρατάει τη χρονιά που εισάγει ο χρήστης στην αναζήτηση ταινιών
-    private MovieController mc = new MovieController();
-    private FavoriteListController flc = new FavoriteListController();
-    private ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
-    //private String genreSelection;
+    private final MovieController mc = new MovieController();
+    private final FavoriteListController flc = new FavoriteListController();
+    private final ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
     private int comboBoxActionCounter;     // Μετρητής πρόσβασης στη μέθοδο favoriteListComboBoxActionPerformed
+    private boolean rowFromTableSelected;
+    
     /**
      * Creates new form MainMenu
      * @throws java.net.MalformedURLException
      */
     public MainMenu() throws MalformedURLException, IOException, NoResultException {
-        /* Borderless window */
-        //this.setUndecorated(true);
-
         /* Αρχικοποίηση components της εφαρμογής. Δημιουργείται αυτόματα */
         initComponents();
-        /* Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels */
-        mainPanelHome.setBackground(new Color(0, 204, 102, 40));
-        mainPanelFavorite.setBackground(new Color(0, 204, 102, 40));
-        mainPanelStatistics.setBackground(new Color(0, 204, 102, 40));
-        mainPanelSearch.setBackground(new Color(0, 204, 102, 40));
-
-        /* Εμφάνιση του αρχικού optionsBarPanel */
-        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
-        card.show(optionsBarPanel, "homePanel");
-
-        /* 
-         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
-         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
-         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
-         */
-        try{
-            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-            Movie movie = mc.getMovie(9806);
-            movieTitle.setText(movie.getTitle());
-            movieOverview.setText(movie.getOverview());
-            URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
-            Image image = ImageIO.read(url);
-            ImageIcon icon = new ImageIcon(image);
-            posterLabel.setIcon(icon);
-        }
-        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-        catch(NoResultException nre){
-            JOptionPane.showMessageDialog(null, "Δεν υπάρχει το αντικείμενο στη βάση δεδομένων", "Σφάλμα", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        /* Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους */
-        rolloverButton(homeButton);
-        rolloverButton(retrieveButton);
-        rolloverButton(statisticsButton);
-        rolloverButton(favoriteButton);
-        rolloverButton(exitButton);
-        rolloverButton(searchButton);
-        
-        fillFavoriteList();
-        fillFavoriteListComboBox();
-        // Αρχικά το jComboBox είναι κενό        
-        favoriteListComboBox.setSelectedIndex(-1);
-        // Αρχικά το jComboBox είναι κενό
-        genreComboBox.setSelectedIndex(-1);  
-        jScrollPane1.setVisible(false);
-        movieTableScrollPane.setVisible(false);
-    }
-
-    /* Μέθοδος διαχείρισης εμφάνισης jButton σε δυναμικό περιβάλλον */
-    private void rolloverButton(JButton button) {
-        button.addMouseListener(new MouseAdapter() {
-            Color oldcolor1;
-            Color oldcolor2;
-
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                if (button == homeButton) {
-                    infoLabel.setText("Αρχική");
-                } else if (button == retrieveButton) {
-                    infoLabel.setText("Ανάκτηση και Αποθήκευση Δεδομένων");
-                } else if (button == favoriteButton) {
-                    infoLabel.setText("Διαχείριση Λιστών Αγαπημένων Ταινιών");
-                } else if (button == searchButton) {
-                    infoLabel.setText("Αναζήτηση Ταινιών");
-                } else if (button == statisticsButton) {
-                    infoLabel.setText("Στατιστικά");
-                } else if (button == exitButton) {
-                    infoLabel.setText("Έξοδος Εφαρμογής");
-                }
-                oldcolor1 = button.getForeground();
-                oldcolor2 = button.getBackground();
-                button.setForeground(new Color(0, 33, 33));
-                button.setBackground(new Color(0, 102, 51));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent me) {
-                button.setForeground(oldcolor1);
-                button.setBackground(oldcolor2);
-                infoLabel.setText("");
-            }
-        });
+        /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
+        setup();
     }
 
     /**
@@ -449,11 +369,6 @@ public class MainMenu extends java.awt.Frame {
         yearLabel1.setText("Έτος Κυκλοφορίας");
         searchOptionsPanel.add(yearLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 10, 110, 20));
 
-        setYearText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setYearTextActionPerformed(evt);
-            }
-        });
         setYearText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 setYearTextKeyTyped(evt);
@@ -569,15 +484,14 @@ public class MainMenu extends java.awt.Frame {
         mainPanelFavorite.setBackground(new java.awt.Color(102, 102, 102));
         mainPanelFavorite.setLayout(new java.awt.BorderLayout());
 
+        favoriteListTable.setBackground(new java.awt.Color(48, 48, 48));
+        favoriteListTable.setForeground(new java.awt.Color(255, 255, 255));
         favoriteListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane1.setViewportView(favoriteListTable);
@@ -701,7 +615,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHome.setVisible(true);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);
+        mainPanelSearch.setVisible(false);       
     }//GEN-LAST:event_homeButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton*/
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
@@ -710,7 +624,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(true);
-        mainPanelSearch.setVisible(false);
+        mainPanelSearch.setVisible(false);       
     }//GEN-LAST:event_statisticsButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton*/
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
@@ -724,13 +638,15 @@ public class MainMenu extends java.awt.Frame {
     }//GEN-LAST:event_retrieveButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton*/
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
-        fillFavoriteList();
+        fillFavoriteList();        
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "favoritePanel");
+        jScrollPane1.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας
+        mainPanelFavorite.setBackground(new Color(0,204,102,40));
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(true);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);
+        mainPanelSearch.setVisible(false);     
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
     /* 
@@ -763,20 +679,18 @@ public class MainMenu extends java.awt.Frame {
         favoriteListComboBox.setSelectedIndex(-1);
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "searchPanel");
+        movieTableScrollPane.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας   
+        mainPanelSearch.setBackground(new Color(0,204,102,40));        
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(true);
+        mainPanelSearch.setVisible(true);      
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
         setYearText.setText("");
         genreComboBox.setSelectedIndex(-1);
     }//GEN-LAST:event_clearContentsButtonActionPerformed
-
-    private void setYearTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setYearTextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_setYearTextActionPerformed
 
     private void setYearTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_setYearTextKeyTyped
         char c=evt.getKeyChar();
@@ -788,6 +702,8 @@ public class MainMenu extends java.awt.Frame {
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton*/
     private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
         /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
+        favoriteListComboBox.setSelectedIndex(-1); 
+        rowFromTableSelected = false;   // reset σημαίας       
         try{
             userInput = Integer.parseInt(setYearText.getText());  
         }
@@ -868,7 +784,6 @@ public class MainMenu extends java.awt.Frame {
     }//GEN-LAST:event_deleteListButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί editListButton*/
     private void editListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editListButtonActionPerformed
-        // TODO: Να θέσω πρώτα null τις αντίστοιχες ταινίες
         // Ελέγχουμε εάν επιλέχθηκε κάποιο στοιχείο από τη λίστα αγαπημένων
         if(favoriteList.getSelectedValue() == null){
             JOptionPane.showMessageDialog(null, "Δεν επιλέχθηκε κάποια Λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);        
@@ -882,16 +797,18 @@ public class MainMenu extends java.awt.Frame {
             CreateNewList newList = new CreateNewList(this, true);
             newList.setLocationRelativeTo(this);
             JTextField t = new JTextField();
+            // Εμφάνιση του παλιού ονόματος στο νέο παράθυρο διαλόγου
             t.setText(favoriteList.getSelectedValue());
             newList.setUserText(t);
             newList.setVisible(true);
+            // Εάν επιλέχθηκε αποθήκευση, προχωράμε
             if(newList.getReturnStatus() == 1){
                 String oldName = favoriteList.getSelectedValue();
-                flc.deleteFavoriteFromDataBase(oldName);
-                t = newList.getUserText();
-                FavoriteList fl = new FavoriteList();
-                fl.setName(t.getText());
-                flc.storeFavoriteToDataBase(fl);
+                t = newList.getUserText();      // JTextField. Κρατάει το νέο όνομα
+                // Ανάκτηση από τη βάση της λίστας αγαπημένων προς τροποποίηση
+                FavoriteList fl = flc.getFavoriteListByName(oldName);
+                // Αλλαγή του ονόματος
+                flc.updateFavoriteListName(fl, t.getText());
                 fillFavoriteList();    
             }            
         }
@@ -907,14 +824,17 @@ public class MainMenu extends java.awt.Frame {
             FavoriteList fl = null;
             mc.updateMovie(m.getId(), fl);
             favoriteListComboBox.setSelectedIndex(-1);
-           JOptionPane.showMessageDialog(null, "Η ταινία αφαιρέθηκε από τη λίστα", "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE);             
+            JOptionPane.showMessageDialog(null, "Η ταινία αφαιρέθηκε από τη λίστα", "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE);             
         }                 
     }//GEN-LAST:event_deleteFromListButtonActionPerformed
     /* Μέθοδος προσθήκης σε λίστα, μιας επιλεγμένης ταινίας */
     private void favoriteListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteListComboBoxActionPerformed
         // Έλεγχος αν υπάρχει εγγραφή στον πίνακα, αν επιλέχθηκε στοιχείο στο comboBox και αν η μέθοδος κλήθηκε από τον χρήστη
+        System.out.println(searchMovieTable.getRowCount());
         comboBoxActionCounter++;
-        if(searchMovieTable.getRowCount() != 0 && favoriteListComboBox.getSelectedItem() != null && comboBoxActionCounter > 0){            
+        System.out.println("Counter = "+comboBoxActionCounter);
+        if(searchMovieTable.getRowCount() != 0 && favoriteListComboBox.getSelectedItem() != null 
+                && comboBoxActionCounter > 0 && rowFromTableSelected){            
             int row = searchMovieTable.getSelectedRow();
             String title = (String)searchMovieTable.getValueAt(row, 0);
             Movie m = mc.getMovieByTtitle(title);           
@@ -955,6 +875,92 @@ public class MainMenu extends java.awt.Frame {
         checkSelectedRecordFromTable(); 
     }//GEN-LAST:event_searchMovieTableMousePressed
 
+    /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
+    private void setup() throws MalformedURLException{
+         /* Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels */
+        mainPanelHome.setBackground(new Color(0, 204, 102, 40));
+        mainPanelFavorite.setBackground(new Color(0, 204, 102, 40));
+        mainPanelStatistics.setBackground(new Color(0, 204, 102, 40));
+        mainPanelSearch.setBackground(new Color(0, 204, 102, 40));
+
+        /* Εμφάνιση του αρχικού optionsBarPanel */
+        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
+        card.show(optionsBarPanel, "homePanel");
+
+        /* 
+         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
+         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
+         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
+         */
+        try{
+            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+            Movie movie = mc.getMovie(9806);
+            movieTitle.setText(movie.getTitle());
+            movieOverview.setText(movie.getOverview());
+            URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
+            Image image = ImageIO.read(url);
+            ImageIcon icon = new ImageIcon(image);
+            posterLabel.setIcon(icon);
+        }
+        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+        catch(NoResultException nre){
+            JOptionPane.showMessageDialog(null, "Δεν υπάρχει το αντικείμενο στη βάση δεδομένων", "Σφάλμα", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        /* Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους */
+        rolloverButton(homeButton);
+        rolloverButton(retrieveButton);
+        rolloverButton(statisticsButton);
+        rolloverButton(favoriteButton);
+        rolloverButton(exitButton);
+        rolloverButton(searchButton);
+        
+        fillFavoriteList();
+        fillFavoriteListComboBox();
+        // Αρχικά το jComboBox είναι κενό        
+        favoriteListComboBox.setSelectedIndex(-1);
+        // Αρχικά το jComboBox είναι κενό
+        genreComboBox.setSelectedIndex(-1);  
+    }
+    
+    /* Μέθοδος διαχείρισης εμφάνισης jButton σε δυναμικό περιβάλλον */
+    private void rolloverButton(JButton button) {
+        button.addMouseListener(new MouseAdapter() {
+            Color oldcolor1;
+            Color oldcolor2;
+
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                if (button == homeButton) {
+                    infoLabel.setText("Αρχική");
+                } else if (button == retrieveButton) {
+                    infoLabel.setText("Ανάκτηση και Αποθήκευση Δεδομένων");
+                } else if (button == favoriteButton) {
+                    infoLabel.setText("Διαχείριση Λιστών Αγαπημένων Ταινιών");
+                } else if (button == searchButton) {
+                    infoLabel.setText("Αναζήτηση Ταινιών");
+                } else if (button == statisticsButton) {
+                    infoLabel.setText("Στατιστικά");
+                } else if (button == exitButton) {
+                    infoLabel.setText("Έξοδος Εφαρμογής");
+                }
+                oldcolor1 = button.getForeground();
+                oldcolor2 = button.getBackground();
+                button.setForeground(new Color(0, 33, 33));
+                button.setBackground(new Color(0, 102, 51));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                button.setForeground(oldcolor1);
+                button.setBackground(oldcolor2);
+                infoLabel.setText("");
+            }
+        });
+    }
+    
    /* Ανανέωση των περιεχομένων που εμφανίζονται στην jList favoriteList */
     private void fillFavoriteList(){
         FavoriteList fl;
@@ -980,6 +986,7 @@ public class MainMenu extends java.awt.Frame {
     /* Έλεγχος της επιλεγμένης εγγραφής στον πίνακα movieTable */    
     public void checkSelectedRecordFromTable(){
         comboBoxActionCounter = -1;
+        rowFromTableSelected = true;
         int row = searchMovieTable.getSelectedRow();
         System.out.println(row);
         String title = (String)searchMovieTable.getValueAt(row, 0);

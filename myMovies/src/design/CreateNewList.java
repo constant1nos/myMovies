@@ -74,7 +74,7 @@ public class CreateNewList extends javax.swing.JDialog {
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(0, 31, 31));
+        jPanel1.setBackground(new java.awt.Color(21, 21, 21));
 
         saveButton.setBackground(new java.awt.Color(0, 0, 0));
         saveButton.setForeground(new java.awt.Color(0, 204, 102));

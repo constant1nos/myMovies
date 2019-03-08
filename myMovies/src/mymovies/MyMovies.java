@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class MyMovies {
 
     /**
-     * @param args the command line argument
+     * @param args the command line arguments
      */
     public static void main(String[] args) {
         

@@ -30,6 +30,12 @@ public class FavoriteListController extends MainController{
         query.executeUpdate();
         em.getTransaction().commit();
     }
+   
+    public void updateFavoriteListName(FavoriteList favoriteList, String name){
+        em.getTransaction().begin();
+        favoriteList.setName(name);
+        em.getTransaction().commit();
+    }
     
     public List getFavoriteList(){
         Query query = em.createNamedQuery("FavoriteList.findAll");
