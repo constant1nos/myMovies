@@ -8,6 +8,8 @@ import entity.Genre;
 import entity.Movie;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -61,24 +63,30 @@ public class MovieController extends MainController{
         q.setParameter("date2", date2);
         q.setParameter("genreId", genre);
         // Μετατροπή List σε ArrayList
-        return listToArrayList(q.getResultList());
+        ArrayList<Movie> movies = new ArrayList<>(q.getResultList());
+        return movies;
     } 
 
     public ArrayList<Movie> getMoviesForList(FavoriteList favoriteList){
         Query q = em.createNamedQuery("Movie.findByFavoriteList");
         q.setParameter("favoriteListId", favoriteList);
         // Μετατροπή List σε ArrayList  
-        return listToArrayList(q.getResultList());
+        ArrayList<Movie> movies = new ArrayList<>(q.getResultList());
+        return movies;
     } 
  
-    // Μέθοδος μετατροπής List σε ArrayList      
-    private ArrayList<Movie> listToArrayList(List<Movie> movies){
-        ArrayList<Movie> m = new ArrayList<>();
-        for(int i = 0; i < movies.size(); i++){
-            m.add(movies.get(i));
+    /* Μέθοδος ανάκτησης των 10 καλύτερων ταινιών */
+    public ArrayList<Movie> getTopTenMovies(){
+        Query q = em.createNamedQuery("Movie.findAll");
+        List<Movie> movies = q.getResultList();
+        // Ταξινόμηση ταινιών κατά φθίνουσα βαθμολογία
+        Collections.sort(movies, Collections.reverseOrder(Comparator.comparingDouble(Movie::getRating)));
+        ArrayList<Movie> topTenMovies = new ArrayList<>();  
+        // Επιστροφή των 10 ταινιών με την υψηλότερη βαθμολογία
+        for(int i = 0; i < 10; i++){
+            topTenMovies.add(movies.get(i));
         }
-        return m;       
+        return topTenMovies;
     }
-
-    
+      
 }

@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,8 +47,8 @@ public class MainMenu extends java.awt.Frame {
     private final MovieController mc = new MovieController();
     private final FavoriteListController flc = new FavoriteListController();
     private final ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
-    private int comboBoxActionCounter;     // Μετρητής πρόσβασης στη μέθοδο favoriteListComboBoxActionPerformed
-    private boolean rowFromTableSelected;
+    private int comboBoxActionCounter;      // Μετρητής πρόσβασης στη μέθοδο favoriteListComboBoxActionPerformed
+    private boolean rowFromTableSelected;   // Σημαία ελέγχου επιλογής εγγραφής από πίνακα
     
     /**
      * Creates new form MainMenu
@@ -119,7 +121,10 @@ public class MainMenu extends java.awt.Frame {
         movieTableScrollPane = new javax.swing.JScrollPane();
         searchMovieTable = new javax.swing.JTable();
         mainPanelStatistics = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        statisticsScrollPane1 = new javax.swing.JScrollPane();
+        topTen = new javax.swing.JTable();
+        statisticsScrollPane2 = new javax.swing.JScrollPane();
+        topTenPerList = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(51, 51, 51));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -426,11 +431,21 @@ public class MainMenu extends java.awt.Frame {
         topTenButton.setBackground(new java.awt.Color(0, 0, 0));
         topTenButton.setForeground(new java.awt.Color(0, 204, 102));
         topTenButton.setText("Οι Καλύτερες 10 Ταινίες");
+        topTenButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topTenButtonActionPerformed(evt);
+            }
+        });
         statisticsOptionsPanel.add(topTenButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, 240, 25));
 
         topTenPerListButton.setBackground(new java.awt.Color(0, 0, 0));
         topTenPerListButton.setForeground(new java.awt.Color(0, 204, 102));
         topTenPerListButton.setText("Οι Καλύτερες 10 Ταινίες ανά Λίστα");
+        topTenPerListButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                topTenPerListButtonActionPerformed(evt);
+            }
+        });
         statisticsOptionsPanel.add(topTenPerListButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 60, 240, 25));
 
         optionsBarPanel.add(statisticsOptionsPanel, "statisticsPanel");
@@ -537,30 +552,35 @@ public class MainMenu extends java.awt.Frame {
         mainPanel.add(mainPanelSearch, "card5");
 
         mainPanelStatistics.setBackground(new java.awt.Color(102, 102, 102));
+        mainPanelStatistics.setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("mainPanelStatistics: Εδώ μπορείτε να προσθέσετε πίνακες ή μηνύματα προς τον χρήστη");
+        topTen.setBackground(new java.awt.Color(48, 48, 48));
+        topTen.setForeground(new java.awt.Color(255, 255, 255));
+        topTen.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        javax.swing.GroupLayout mainPanelStatisticsLayout = new javax.swing.GroupLayout(mainPanelStatistics);
-        mainPanelStatistics.setLayout(mainPanelStatisticsLayout);
-        mainPanelStatisticsLayout.setHorizontalGroup(
-            mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 948, Short.MAX_VALUE)
-            .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 224, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addGap(0, 224, Short.MAX_VALUE)))
-        );
-        mainPanelStatisticsLayout.setVerticalGroup(
-            mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 402, Short.MAX_VALUE)
-            .addGroup(mainPanelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainPanelStatisticsLayout.createSequentialGroup()
-                    .addGap(0, 193, Short.MAX_VALUE)
-                    .addComponent(jLabel4)
-                    .addGap(0, 193, Short.MAX_VALUE)))
-        );
+            },
+            new String [] {
+                "Όνομα Ταινίας", "Βαθμολογία"
+            }
+        ));
+        statisticsScrollPane1.setViewportView(topTen);
+
+        mainPanelStatistics.add(statisticsScrollPane1, java.awt.BorderLayout.CENTER);
+
+        topTenPerList.setBackground(new java.awt.Color(48, 48, 48));
+        topTenPerList.setForeground(new java.awt.Color(255, 255, 255));
+        topTenPerList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Όνομα Ταινίας"
+            }
+        ));
+        statisticsScrollPane2.setViewportView(topTenPerList);
+
+        mainPanelStatistics.add(statisticsScrollPane2, java.awt.BorderLayout.PAGE_START);
 
         mainPanel.add(mainPanelStatistics, "statisticsCard");
 
@@ -608,7 +628,7 @@ public class MainMenu extends java.awt.Frame {
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         System.exit(0);
     }//GEN-LAST:event_exitForm
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί homeButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί homeButton */
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
@@ -617,26 +637,29 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(false);       
     }//GEN-LAST:event_homeButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton */
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "statisticsPanel");
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(true);
-        mainPanelSearch.setVisible(false);       
+        mainPanelStatistics.setBackground(new Color(0,204,102,40));        
+        mainPanelSearch.setVisible(false);     
+        statisticsScrollPane1.setVisible(false);      
+        statisticsScrollPane2.setVisible(false);          
     }//GEN-LAST:event_statisticsButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton */
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // έξοδος από την εαφρμογή
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί retrieveButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί retrieveButton */
     private void retrieveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retrieveButtonActionPerformed
         CommunicationWorker cm = new CommunicationWorker();
         cm.execute();
     }//GEN-LAST:event_retrieveButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton */
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
         fillFavoriteList();        
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
@@ -686,7 +709,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.setVisible(false);
         mainPanelSearch.setVisible(true);      
     }//GEN-LAST:event_searchButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί clearContentsButton */
     private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
         setYearText.setText("");
         genreComboBox.setSelectedIndex(-1);
@@ -699,7 +722,7 @@ public class MainMenu extends java.awt.Frame {
             evt.consume();
         }
     }//GEN-LAST:event_setYearTextKeyTyped
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton */
     private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
         /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
         favoriteListComboBox.setSelectedIndex(-1); 
@@ -737,7 +760,7 @@ public class MainMenu extends java.awt.Frame {
         }
     }//GEN-LAST:event_searchMoviesButtonActionPerformed
 
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί createListButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί createListButton */
     private void createListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createListButtonActionPerformed
         // Δημιουργία νέου παραθύρου διαλόγου
         CreateNewList newList = new CreateNewList(this, true);
@@ -753,7 +776,7 @@ public class MainMenu extends java.awt.Frame {
             fillFavoriteList();    
         }
     }//GEN-LAST:event_createListButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteListButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteListButton */
     private void deleteListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteListButtonActionPerformed
         if(favoriteList.getSelectedValuesList() != null){
             // Δημιουργία jOptionPane για προειδοποίηση διαγραφής
@@ -782,7 +805,7 @@ public class MainMenu extends java.awt.Frame {
         }
         fillFavoriteList();        
     }//GEN-LAST:event_deleteListButtonActionPerformed
-    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί editListButton*/
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί editListButton */
     private void editListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editListButtonActionPerformed
         // Ελέγχουμε εάν επιλέχθηκε κάποιο στοιχείο από τη λίστα αγαπημένων
         if(favoriteList.getSelectedValue() == null){
@@ -814,10 +837,10 @@ public class MainMenu extends java.awt.Frame {
         }
            
     }//GEN-LAST:event_editListButtonActionPerformed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteFromListButton */
     private void deleteFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFromListButtonActionPerformed
-        // TODO add your handling code here:
-        if(favoriteListComboBox.getSelectedItem() != null){
+        // Έλεγχος αν επιλέχθηκε εγγραφή από τον πίνακα και λίστα από το jComboBox
+        if(favoriteListComboBox.getSelectedItem() != null && rowFromTableSelected){
             int row = searchMovieTable.getSelectedRow();
             String title = (String)searchMovieTable.getValueAt(row, 0);
             Movie m = mc.getMovieByTtitle(title);  
@@ -825,7 +848,9 @@ public class MainMenu extends java.awt.Frame {
             mc.updateMovie(m.getId(), fl);
             favoriteListComboBox.setSelectedIndex(-1);
             JOptionPane.showMessageDialog(null, "Η ταινία αφαιρέθηκε από τη λίστα", "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE);             
-        }                 
+        }
+        else
+            JOptionPane.showMessageDialog(null, "Δεν έχει επιλεγεί λίστα και ταινία", "Ενημέρωση", JOptionPane.WARNING_MESSAGE);  
     }//GEN-LAST:event_deleteFromListButtonActionPerformed
     /* Μέθοδος προσθήκης σε λίστα, μιας επιλεγμένης ταινίας */
     private void favoriteListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteListComboBoxActionPerformed
@@ -870,18 +895,59 @@ public class MainMenu extends java.awt.Frame {
             jScrollPane1.setVisible(true);
         }
     }//GEN-LAST:event_favoriteListMousePressed
-
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν επιλεγεί κάποια εγγραφή από τον πίνακα searchMovieTable */
     private void searchMovieTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMovieTableMousePressed
         checkSelectedRecordFromTable(); 
     }//GEN-LAST:event_searchMovieTableMousePressed
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί topTenButton */
+    private void topTenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenButtonActionPerformed
+        ArrayList<Movie> topTenMovies = mc.getTopTenMovies();
+        DefaultTableModel tModel = (DefaultTableModel)topTen.getModel();
+        tModel.setRowCount(0);
+        int colCount = topTen.getColumnCount();
+        Object[] ob = new Object[colCount];
+        for(Movie m : topTenMovies){
+            for(int row = 0; row < topTenMovies.size(); row++){
+                ob[0] = m.getTitle();
+                ob[1] = m.getRating();
+            }
+            tModel.addRow(ob);
+        }
+        mainPanelStatistics.setBackground(new Color(102,102,102));        
+        System.out.println("Ο πίνακας δημιουργήθηκε");
+        statisticsScrollPane1.setVisible(true); 
+        statisticsScrollPane2.setVisible(false);         
+        mainPanelStatistics.repaint();
+        mainPanelStatistics.validate();        
+    }//GEN-LAST:event_topTenButtonActionPerformed
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί topTenPerListButton */
+    private void topTenPerListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenPerListButtonActionPerformed
+        List<FavoriteList> allFavoriteLists = flc.getFavoriteList();
+        ArrayList<Movie> movies = new ArrayList<>();
+        DefaultTableModel tModel = (DefaultTableModel)topTenPerList.getModel();
+        tModel.setRowCount(0);
+        int colCount = topTenPerList.getColumnCount();
+        Object[] ob = new Object[colCount];
+        for(int i = 0; i < allFavoriteLists.size(); i++){
+            movies.clear();
+            movies = mc.getMoviesForList(allFavoriteLists.get(i));
+            // Εύρεση ταινίας με τη μεγαλύτερη βαθμολογία
+            Movie movie = Collections.max(movies, Comparator.comparingDouble(Movie::getRating));
+            System.out.println(movie.getTitle());
+            ob[0] = movie.getTitle();
+            tModel.addRow(ob);
+        }       
+        mainPanelStatistics.setBackground(new Color(102,102,102));
+        statisticsScrollPane1.setVisible(false);        
+        statisticsScrollPane2.setVisible(true);
+        mainPanelStatistics.repaint();
+        mainPanelStatistics.validate();          
+    }//GEN-LAST:event_topTenPerListButtonActionPerformed
 
     /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
     private void setup() throws MalformedURLException{
          /* Αρχικοποίηση του χρώματος και της διαφάνειας των κυριώς panels */
         mainPanelHome.setBackground(new Color(0, 204, 102, 40));
-        mainPanelFavorite.setBackground(new Color(0, 204, 102, 40));
-        mainPanelStatistics.setBackground(new Color(0, 204, 102, 40));
-        mainPanelSearch.setBackground(new Color(0, 204, 102, 40));
 
         /* Εμφάνιση του αρχικού optionsBarPanel */
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
@@ -972,6 +1038,7 @@ public class MainMenu extends java.awt.Frame {
         }
         favoriteList.setModel(m);
     }
+    
     /* Ανανέωση των περιεχομένων που εμφανίζονται στο jComboBox favoriteListComboBox */    
     private void fillFavoriteListComboBox(){
         FavoriteList fl;
@@ -983,6 +1050,7 @@ public class MainMenu extends java.awt.Frame {
         }
         favoriteListComboBox.setModel(m);
     }
+    
     /* Έλεγχος της επιλεγμένης εγγραφής στον πίνακα movieTable */    
     public void checkSelectedRecordFromTable(){
         comboBoxActionCounter = -1;
@@ -1027,7 +1095,6 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JButton homeButton;
     private javax.swing.JPanel homeOptionsPanel;
     private javax.swing.JLabel infoLabel;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane listScrollPane;
     private javax.swing.JLabel logoLabel;
@@ -1052,8 +1119,12 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JPanel sideMenuBar;
     private javax.swing.JButton statisticsButton;
     private javax.swing.JPanel statisticsOptionsPanel;
+    private javax.swing.JScrollPane statisticsScrollPane1;
+    private javax.swing.JScrollPane statisticsScrollPane2;
     private javax.swing.JLabel tmdbLabel;
+    private javax.swing.JTable topTen;
     private javax.swing.JButton topTenButton;
+    private javax.swing.JTable topTenPerList;
     private javax.swing.JButton topTenPerListButton;
     private javax.swing.JLayeredPane upperBar;
     private javax.swing.JLabel yearLabel1;
