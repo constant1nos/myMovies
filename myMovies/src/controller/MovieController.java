@@ -59,7 +59,7 @@ public class MovieController extends MainController{
     }
 
     /* Ανάκτηση ταινιών από τη βάση δεδομένων, όταν ο χρήστης εκτελέσει αναζήτηση βάσει κριτηρίων */    
-    public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre, boolean sorted){
+    public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre){
         Query q = em.createNamedQuery("Movie.findYearAndGenre");
         Calendar calendar = new GregorianCalendar(selectedYear,0,1);
         Date date1 = calendar.getTime();
@@ -71,10 +71,6 @@ public class MovieController extends MainController{
         q.setParameter("genreId", genre);
         // Μετατροπή List σε ArrayList
         ArrayList<Movie> movies = new ArrayList<>(q.getResultList());
-        // Εαν ζητήθηκε ταξινόμηση κατά την κλήση της μεθόδου, γίνεται σε αυτό το σημείο        
-        if(sorted){
-            Collections.sort(movies, Collections.reverseOrder(Comparator.comparingDouble(Movie::getRating))); 
-        }
         return movies;
     } 
 
