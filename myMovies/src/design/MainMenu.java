@@ -3,6 +3,9 @@
  */
 package design;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.awt.event.KeyEvent;
 import communication.CommunicationWorker;
 import controller.FavoriteListController;
@@ -19,12 +22,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -49,6 +55,7 @@ public class MainMenu extends java.awt.Frame {
     private final ImageIcon bckgndImage = new ImageIcon("src/resources/bckgnd.jpg");
     private int comboBoxActionCounter;      // Μετρητής πρόσβασης στη μέθοδο favoriteListComboBoxActionPerformed
     private boolean rowFromTableSelected;   // Σημαία ελέγχου επιλογής εγγραφής από πίνακα
+    private boolean homePanelMovieIsSet;    // Σημαία ελέγχου αρχικοποίησης προβαλλόμενης ταινίας
     
     /**
      * Creates new form MainMenu
@@ -105,6 +112,7 @@ public class MainMenu extends java.awt.Frame {
         addToListLabel = new javax.swing.JLabel();
         favoriteListComboBox = new javax.swing.JComboBox<>();
         deleteFromListButton = new javax.swing.JButton();
+        sortTableButton = new javax.swing.JButton();
         statisticsOptionsPanel = new javax.swing.JPanel();
         topTenButton = new javax.swing.JButton();
         topTenPerListButton = new javax.swing.JButton();
@@ -114,6 +122,11 @@ public class MainMenu extends java.awt.Frame {
         movieTitle = new javax.swing.JLabel();
         movieScrollPane = new javax.swing.JScrollPane();
         movieOverview = new javax.swing.JTextArea();
+        titleLabel = new javax.swing.JLabel();
+        movieTitleLabel = new javax.swing.JLabel();
+        overviewLabel = new javax.swing.JLabel();
+        scoreLabel = new javax.swing.JLabel();
+        movieScoreLabel = new javax.swing.JLabel();
         mainPanelFavorite = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         favoriteListTable = new javax.swing.JTable();
@@ -423,6 +436,16 @@ public class MainMenu extends java.awt.Frame {
         });
         searchOptionsPanel.add(deleteFromListButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 40, 180, 25));
 
+        sortTableButton.setBackground(new java.awt.Color(0, 0, 0));
+        sortTableButton.setForeground(new java.awt.Color(0, 204, 102));
+        sortTableButton.setText("Ταξινόμηση");
+        sortTableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortTableButtonActionPerformed(evt);
+            }
+        });
+        searchOptionsPanel.add(sortTableButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 10, 180, 25));
+
         optionsBarPanel.add(searchOptionsPanel, "searchPanel");
 
         statisticsOptionsPanel.setBackground(new java.awt.Color(21, 21, 21));
@@ -454,44 +477,48 @@ public class MainMenu extends java.awt.Frame {
         mainPanel.setLayout(new java.awt.CardLayout());
 
         mainPanelHome.setBackground(new java.awt.Color(102, 102, 102));
-
-        posterLabel.setToolTipText("");
+        mainPanelHome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        mainPanelHome.add(posterLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 95, 210, 278));
 
         movieTitle.setForeground(new java.awt.Color(255, 255, 255));
         movieTitle.setText("jLabel2");
+        mainPanelHome.add(movieTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(416, 88, -1, 20));
 
-        movieOverview.setBackground(new java.awt.Color(21, 21, 21));
+        movieScrollPane.setOpaque(false);
+
+        movieOverview.setBackground(new java.awt.Color(48, 48, 48));
         movieOverview.setColumns(20);
         movieOverview.setForeground(new java.awt.Color(255, 255, 255));
         movieOverview.setLineWrap(true);
         movieOverview.setRows(5);
+        movieOverview.setOpaque(false);
         movieScrollPane.setViewportView(movieOverview);
 
-        javax.swing.GroupLayout mainPanelHomeLayout = new javax.swing.GroupLayout(mainPanelHome);
-        mainPanelHome.setLayout(mainPanelHomeLayout);
-        mainPanelHomeLayout.setHorizontalGroup(
-            mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelHomeLayout.createSequentialGroup()
-                .addContainerGap(175, Short.MAX_VALUE)
-                .addComponent(posterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addGroup(mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(movieTitle))
-                .addGap(188, 188, 188))
-        );
-        mainPanelHomeLayout.setVerticalGroup(
-            mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelHomeLayout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addGroup(mainPanelHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(posterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(mainPanelHomeLayout.createSequentialGroup()
-                        .addComponent(movieTitle)
-                        .addGap(18, 18, 18)
-                        .addComponent(movieScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
+        mainPanelHome.add(movieScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(416, 166, 344, 207));
+
+        titleLabel.setFont(new java.awt.Font("Dialog", 3, 14)); // NOI18N
+        titleLabel.setForeground(new java.awt.Color(255, 255, 255));
+        titleLabel.setText("Προβαλλόμενη Ταινία");
+        mainPanelHome.add(titleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 12, 301, 30));
+
+        movieTitleLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        movieTitleLabel.setForeground(new java.awt.Color(255, 255, 255));
+        movieTitleLabel.setText("Τίτλος Ταινίας");
+        mainPanelHome.add(movieTitleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 66, -1, -1));
+
+        overviewLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        overviewLabel.setForeground(new java.awt.Color(255, 255, 255));
+        overviewLabel.setText("Περίληψη");
+        mainPanelHome.add(overviewLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(419, 137, 110, 25));
+
+        scoreLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        scoreLabel.setForeground(new java.awt.Color(255, 255, 255));
+        scoreLabel.setText("Βαθμολογία");
+        mainPanelHome.add(scoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 66, 85, 20));
+
+        movieScoreLabel.setForeground(new java.awt.Color(255, 255, 255));
+        movieScoreLabel.setText("jLabel5");
+        mainPanelHome.add(movieScoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(831, 88, 85, 20));
 
         mainPanel.add(mainPanelHome, "homeCard");
         mainPanelHome.getAccessibleContext().setAccessibleName("");
@@ -635,7 +662,9 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHome.setVisible(true);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);       
+        mainPanelSearch.setVisible(false);
+        /* Εμφανίζει στη αρχική οθόνη μια από τις καλύτερες 10 ταινίες */
+        setMainPanelMovie();        
     }//GEN-LAST:event_homeButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton */
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
@@ -679,7 +708,6 @@ public class MainMenu extends java.awt.Frame {
      */
     private void backGroundPanelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_backGroundPanelComponentResized
         // Τροποποίηση, μόνο σε περίπτωση που το παράθυρο γίνει μεγαλύτερο από το αρχικό
-        System.out.println(this.getBounds().width+", "+this.getBounds().height);
         if(this.getBounds().width>1064 || this.getBounds().height>613){
             // Οι διαστάσεις τις εικόνας μεταβάλλονται σε σχέση με το μήκος και πλάτος του παραθύρου
             backGroundImage.setSize(this.getBounds().width-16, this.getBounds().height-77);
@@ -707,7 +735,10 @@ public class MainMenu extends java.awt.Frame {
         mainPanelHome.setVisible(false);
         mainPanelFavorite.setVisible(false);
         mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(true);      
+        mainPanelSearch.setVisible(true);  
+        sortTableButton.setVisible(false);          // Απόκρυψη button ταξινόμησης
+        setYearText.setText("");                    // Να μην εμφανίζεται αρχικά κάτι
+        genreComboBox.setSelectedIndex(-1);        
     }//GEN-LAST:event_searchButtonActionPerformed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί clearContentsButton */
     private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
@@ -724,40 +755,14 @@ public class MainMenu extends java.awt.Frame {
     }//GEN-LAST:event_setYearTextKeyTyped
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton */
     private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
-        /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
-        favoriteListComboBox.setSelectedIndex(-1); 
-        rowFromTableSelected = false;   // reset σημαίας       
-        try{
-            userInput = Integer.parseInt(setYearText.getText());  
+        /* Αναζήτηση χωρίς ταξινόμηση */
+        executeSearch(false);
+        /* Εμφάνιση πλήκτρου ταξινόμησης, αν υπάρχουν περισσότερες από 2 ταινίες */
+        if(searchMovieTable.getRowCount() > 2){
+            sortTableButton.setVisible(true);
         }
-        catch(NumberFormatException nfe){
-            userInput = 0;
-        }
-        /* 
-         * Έλεγχος ορθότητας επιλεγμένων δεδομένων για ανεύρεση ταινιών και εμφάνιση
-         * δεδομένων στον πίνακα searchMovieTable 
-         */
-        if(genreComboBox.getSelectedItem() != null && userInput >= 2000 && userInput <= 2030 && !setYearText.getText().equals("")){
-            Genre g = (Genre)genreComboBox.getSelectedItem();
-            DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
-            tModel.setRowCount(0);
-            int colCount = searchMovieTable.getColumnCount();
-            Object[] ob = new Object[colCount];
-            List<Movie> movieList = mc.getSelectedMovies(userInput, g);
-            for(Movie m : movieList){
-                for(int row = 0; row < movieList.size(); row++){
-                    ob[0] = m.getTitle();
-                    ob[1] = m.getRating();
-                    ob[2] = m.getOverview();
-                }
-                tModel.addRow(ob);
-            }
-            mainPanelSearch.setBackground(new Color(102,102,102));
-            movieTableScrollPane.setVisible(true);
-        }
-        else{
-           JOptionPane.showMessageDialog(null, "Επιλέξτε ένα από τα διαθέσιμα είδη και εισάγετε έτος (2000-2030)", "Μη έγκυρες τιμές", JOptionPane.INFORMATION_MESSAGE); 
-        }
+        else
+            sortTableButton.setVisible(false);
     }//GEN-LAST:event_searchMoviesButtonActionPerformed
 
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί createListButton */
@@ -782,7 +787,7 @@ public class MainMenu extends java.awt.Frame {
             // Δημιουργία jOptionPane για προειδοποίηση διαγραφής
             Object[] options = {"Ναι","Ακύρωση"};
             int n = JOptionPane.showOptionDialog(null,
-            "Πρόκειται να διαγράψετε την Λίστα Αγαπημένων. "
+            "Πρόκειται να διαγράψετε τις επιλεγμένες λίστες. "
             +"Θέλετε να συνεχίσετε;",
             "Προειδοποίηση!",
             JOptionPane.OK_CANCEL_OPTION,
@@ -843,7 +848,8 @@ public class MainMenu extends java.awt.Frame {
         if(favoriteListComboBox.getSelectedItem() != null && rowFromTableSelected){
             int row = searchMovieTable.getSelectedRow();
             String title = (String)searchMovieTable.getValueAt(row, 0);
-            Movie m = mc.getMovieByTtitle(title);  
+            String overview = (String)searchMovieTable.getValueAt(row, 2);
+            Movie m = mc.getMovieByTtitleAndOverview(title, overview);  
             FavoriteList fl = null;
             mc.updateMovie(m.getId(), fl);
             favoriteListComboBox.setSelectedIndex(-1);
@@ -855,14 +861,13 @@ public class MainMenu extends java.awt.Frame {
     /* Μέθοδος προσθήκης σε λίστα, μιας επιλεγμένης ταινίας */
     private void favoriteListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteListComboBoxActionPerformed
         // Έλεγχος αν υπάρχει εγγραφή στον πίνακα, αν επιλέχθηκε στοιχείο στο comboBox και αν η μέθοδος κλήθηκε από τον χρήστη
-        System.out.println(searchMovieTable.getRowCount());
         comboBoxActionCounter++;
-        System.out.println("Counter = "+comboBoxActionCounter);
         if(searchMovieTable.getRowCount() != 0 && favoriteListComboBox.getSelectedItem() != null 
                 && comboBoxActionCounter > 0 && rowFromTableSelected){            
             int row = searchMovieTable.getSelectedRow();
             String title = (String)searchMovieTable.getValueAt(row, 0);
-            Movie m = mc.getMovieByTtitle(title);           
+            String overview = (String)searchMovieTable.getValueAt(row, 2);            
+            Movie m = mc.getMovieByTtitleAndOverview(title, overview);           
             FavoriteList fl = flc.getFavoriteListByName((String)favoriteListComboBox.getSelectedItem());
             mc.updateMovie(m.getId(), fl);
             JOptionPane.showMessageDialog(null, "Η ταινία "+title+" προστέθηκε στη λίστα "+fl.getName()
@@ -874,25 +879,30 @@ public class MainMenu extends java.awt.Frame {
    /* Μέθοδος εμφάνισης πίνακα με τις ταινίες που ανήκουν στην επιλεγμένη λίστα */
     private void favoriteListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_favoriteListMousePressed
         // Έλεγχος αν επιλέχθηκε κάποια λίστα
-        System.out.println("Mpike");
         if(favoriteList.getSelectedValue() != null){
             FavoriteList fl = flc.getFavoriteListByName(favoriteList.getSelectedValue());
-            DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
-            tModel.setRowCount(0);
-            int colCount = searchMovieTable.getColumnCount();
-            Object[] ob = new Object[colCount];
             List<Movie> movieList = mc.getMoviesForList(fl);
-            for(Movie m : movieList){
-                for(int row = 0; row < movieList.size(); row++){
-                    ob[0] = m.getTitle();
-                    ob[1] = m.getRating();
-                    ob[2] = m.getOverview();
+            /* Εμφάνιση μόνο σε περίπτωση που η λίστα περιέχει ταινίες */
+            if(!movieList.isEmpty()){
+                DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
+                tModel.setRowCount(0);
+                int colCount = searchMovieTable.getColumnCount();
+                Object[] ob = new Object[colCount];
+                for(Movie m : movieList){
+                    for(int row = 0; row < movieList.size(); row++){
+                        ob[0] = m.getTitle();
+                        ob[1] = m.getRating();
+                        ob[2] = m.getOverview();
+                    }
+                    tModel.addRow(ob);
                 }
-                tModel.addRow(ob);
+                favoriteListTable.setModel(tModel);
+                mainPanelFavorite.setBackground(new Color(102,102,102));
+                jScrollPane1.setVisible(true);                
             }
-            favoriteListTable.setModel(tModel);
-            mainPanelFavorite.setBackground(new Color(102,102,102));
-            jScrollPane1.setVisible(true);
+            else{
+                JOptionPane.showMessageDialog(null, "Δεν υπάρχουν ταινίες για την επιλεγμένη λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);               
+            }
         }
     }//GEN-LAST:event_favoriteListMousePressed
     /* Μέθοδος εκτέλεσης ενεργειών, όταν επιλεγεί κάποια εγγραφή από τον πίνακα searchMovieTable */
@@ -914,7 +924,6 @@ public class MainMenu extends java.awt.Frame {
             tModel.addRow(ob);
         }
         mainPanelStatistics.setBackground(new Color(102,102,102));        
-        System.out.println("Ο πίνακας δημιουργήθηκε");
         statisticsScrollPane1.setVisible(true); 
         statisticsScrollPane2.setVisible(false);         
         mainPanelStatistics.repaint();
@@ -933,7 +942,6 @@ public class MainMenu extends java.awt.Frame {
             movies = mc.getMoviesForList(allFavoriteLists.get(i));
             // Εύρεση ταινίας με τη μεγαλύτερη βαθμολογία
             Movie movie = Collections.max(movies, Comparator.comparingDouble(Movie::getRating));
-            System.out.println(movie.getTitle());
             ob[0] = movie.getTitle();
             tModel.addRow(ob);
         }       
@@ -943,6 +951,11 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.repaint();
         mainPanelStatistics.validate();          
     }//GEN-LAST:event_topTenPerListButtonActionPerformed
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί sortTableButton */
+    private void sortTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTableButtonActionPerformed
+        /* Αναζήτηση με ταξινόμηση */
+        executeSearch(true);           
+    }//GEN-LAST:event_sortTableButtonActionPerformed
 
     /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
     private void setup() throws MalformedURLException{
@@ -952,28 +965,6 @@ public class MainMenu extends java.awt.Frame {
         /* Εμφάνιση του αρχικού optionsBarPanel */
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
         card.show(optionsBarPanel, "homePanel");
-
-        /* 
-         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
-         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
-         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
-         */
-        try{
-            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-            Movie movie = mc.getMovie(9806);
-            movieTitle.setText(movie.getTitle());
-            movieOverview.setText(movie.getOverview());
-            URL url = new URL("https://image.tmdb.org/t/p/w200//l7GqbzkJwowYRIXAtUz2iCPi64a.jpg");
-            Image image = ImageIO.read(url);
-            ImageIcon icon = new ImageIcon(image);
-            posterLabel.setIcon(icon);
-        }
-        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-        catch(NoResultException nre){
-            JOptionPane.showMessageDialog(null, "Δεν υπάρχει το αντικείμενο στη βάση δεδομένων", "Σφάλμα", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException ex) {
-            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         /* Αλλαγή χρώματος background στα buttons, όταν ο κέρσορας είναι πάνω τους */
         rolloverButton(homeButton);
@@ -988,7 +979,18 @@ public class MainMenu extends java.awt.Frame {
         // Αρχικά το jComboBox είναι κενό        
         favoriteListComboBox.setSelectedIndex(-1);
         // Αρχικά το jComboBox είναι κενό
-        genreComboBox.setSelectedIndex(-1);  
+        genreComboBox.setSelectedIndex(-1);
+        homePanelMovieIsSet = false;
+        posterLabel.setVisible(false);
+        movieTitle.setVisible(false);
+        movieScrollPane.setVisible(false);
+        titleLabel.setVisible(false);
+        movieTitleLabel.setVisible(false);
+        overviewLabel.setVisible(false);
+        scoreLabel.setVisible(false);
+        movieScoreLabel.setVisible(false);
+        setMainPanelMovie(); 
+        
     }
     
     /* Μέθοδος διαχείρισης εμφάνισης jButton σε δυναμικό περιβάλλον */
@@ -1052,14 +1054,13 @@ public class MainMenu extends java.awt.Frame {
     }
     
     /* Έλεγχος της επιλεγμένης εγγραφής στον πίνακα movieTable */    
-    public void checkSelectedRecordFromTable(){
+    private void checkSelectedRecordFromTable(){
         comboBoxActionCounter = -1;
         rowFromTableSelected = true;
         int row = searchMovieTable.getSelectedRow();
-        System.out.println(row);
         String title = (String)searchMovieTable.getValueAt(row, 0);
-        System.out.println(title);
-        Movie m = mc.getMovieByTtitle(title); 
+        String overview = (String)searchMovieTable.getValueAt(row, 2);
+        Movie m = mc.getMovieByTtitleAndOverview(title, overview); 
         if(m.getFavoriteListId() != null){
             favoriteListComboBox.setSelectedItem(m.getFavoriteListId().getName());
         }
@@ -1067,6 +1068,102 @@ public class MainMenu extends java.awt.Frame {
             favoriteListComboBox.setSelectedIndex(-1);  
         }
         
+    }
+    
+    /* Αναζήτηση ταινιών με βάση επιλεγμένων κριτηρίων. Η σημαία sorted δηλώνει αν θα γίνει ταξινόμηση ή όχι */
+    private void executeSearch(boolean sorted){
+        /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
+        favoriteListComboBox.setSelectedIndex(-1); 
+        rowFromTableSelected = false;   // reset σημαίας       
+        try{
+            userInput = Integer.parseInt(setYearText.getText());  
+        }
+        catch(NumberFormatException nfe){
+            userInput = 0;
+        }
+        /* 
+         * Έλεγχος ορθότητας επιλεγμένων δεδομένων για ανεύρεση ταινιών και εμφάνιση
+         * δεδομένων στον πίνακα searchMovieTable 
+         */
+        if(genreComboBox.getSelectedItem() != null && userInput >= 2000 && userInput <= 2030 && !setYearText.getText().equals("")){
+            Genre g = (Genre)genreComboBox.getSelectedItem();
+            List<Movie> movieList = mc.getSelectedMovies(userInput, g, sorted);
+            /* Εμφάνιση πίνακα μόνο στην περίπτωση που περιέχει ταινίες */
+            if(!movieList.isEmpty()){
+                DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
+                tModel.setRowCount(0);
+                int colCount = searchMovieTable.getColumnCount();
+                Object[] ob = new Object[colCount];
+                for(Movie m : movieList){
+                    for(int row = 0; row < movieList.size(); row++){
+                        ob[0] = m.getTitle();
+                        ob[1] = m.getRating();
+                        ob[2] = m.getOverview();
+                    }                 
+                    tModel.addRow(ob);
+                }  
+                mainPanelSearch.setBackground(new Color(102,102,102));
+                movieTableScrollPane.setVisible(true);                
+            }
+            else
+                JOptionPane.showMessageDialog(null, "Δεν βρέθηκαν ταινίες με τα επιλεγμένα κριτήρια", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE); 
+        }
+        else{
+           JOptionPane.showMessageDialog(null, "Επιλέξτε ένα από τα διαθέσιμα είδη και εισάγετε έτος (2000-2030)", "Μη έγκυρες τιμές", JOptionPane.INFORMATION_MESSAGE); 
+        }
+    }
+    
+    private void setMainPanelMovie(){
+        /* 
+         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
+         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
+         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
+         */
+        if(!homePanelMovieIsSet){
+        Random random = new Random();
+        int r = random.nextInt((9 - 0) + 1) + 0;
+        try{
+            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+            ArrayList<Movie> movies = mc.getTopTenMovies();
+            Movie movie = movies.get(r);                // Επιλογή κάποιας από τις καλύτερες ταινίες
+            movieTitle.setText(movie.getTitle());
+            movieOverview.setText(movie.getOverview());
+            movieScoreLabel.setText(movie.getRating().toString());
+            URL url = new URL("https://api.themoviedb.org/3/movie/"+movie.getId()+"?api_key=bf92a1466e3a994ab59eb0886780f564&language=en-US"); 
+            InputStream is = url.openStream();            
+            InputStreamReader isr = new InputStreamReader(is); 
+            JsonElement jElement = new JsonParser().parse(isr); 
+            JsonObject mainJsonObject = jElement.getAsJsonObject(); 
+            String posterPath = mainJsonObject.get("poster_path").getAsString();
+            url = new URL("https://image.tmdb.org/t/p/w200/"+posterPath);
+            Image image = ImageIO.read(url);
+            ImageIcon icon = new ImageIcon(image);
+            posterLabel.setIcon(icon);  
+            homePanelMovieIsSet = true;
+            posterLabel.setVisible(true);
+            movieTitle.setVisible(true);
+            movieScrollPane.setVisible(true);
+            titleLabel.setVisible(true);
+            movieTitleLabel.setVisible(true);
+            overviewLabel.setVisible(true);
+            scoreLabel.setVisible(true);
+            movieScoreLabel.setVisible(true);            
+        }
+        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+        catch(NoResultException nre){
+            homePanelMovieIsSet = false;
+            posterLabel.setVisible(false);
+            movieTitle.setVisible(false);
+            movieScrollPane.setVisible(false);
+            titleLabel.setVisible(false);
+            movieTitleLabel.setVisible(false);
+            overviewLabel.setVisible(false);
+            scoreLabel.setVisible(false);
+            movieScoreLabel.setVisible(false);
+        } catch (IOException ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
     }
     /**
      * @param args the command line arguments
@@ -1104,23 +1201,29 @@ public class MainMenu extends java.awt.Frame {
     private javax.swing.JPanel mainPanelSearch;
     private javax.swing.JPanel mainPanelStatistics;
     private javax.swing.JTextArea movieOverview;
+    private javax.swing.JLabel movieScoreLabel;
     private javax.swing.JScrollPane movieScrollPane;
     private javax.swing.JScrollPane movieTableScrollPane;
     private javax.swing.JLabel movieTitle;
+    private javax.swing.JLabel movieTitleLabel;
     private javax.persistence.EntityManager myMoviesPUEntityManager0;
     private javax.swing.JPanel optionsBarPanel;
+    private javax.swing.JLabel overviewLabel;
     private javax.swing.JLabel posterLabel;
     private javax.swing.JButton retrieveButton;
+    private javax.swing.JLabel scoreLabel;
     private javax.swing.JButton searchButton;
     private javax.swing.JTable searchMovieTable;
     private javax.swing.JButton searchMoviesButton;
     private javax.swing.JPanel searchOptionsPanel;
     private javax.swing.JTextField setYearText;
     private javax.swing.JPanel sideMenuBar;
+    private javax.swing.JButton sortTableButton;
     private javax.swing.JButton statisticsButton;
     private javax.swing.JPanel statisticsOptionsPanel;
     private javax.swing.JScrollPane statisticsScrollPane1;
     private javax.swing.JScrollPane statisticsScrollPane2;
+    private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel tmdbLabel;
     private javax.swing.JTable topTen;
     private javax.swing.JButton topTenButton;

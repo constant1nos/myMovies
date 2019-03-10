@@ -79,7 +79,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         publish("Αρχικοποίηση...");
         GenreController gc = new GenreController();
         MovieController mc = new MovieController();
-       FavoriteListController flc = new FavoriteListController();
+        FavoriteListController flc = new FavoriteListController();
         setProgress(10);
         publish("Διαγραφή δεδομένων από τη βάση...");
         // Διαγραφή δεδομένων από τη βάση
@@ -157,7 +157,6 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                     genres.add(genre);
                 }
             }
-            System.out.println("Η ανάκτηση των ειδών ήταν επιτυχής");
         }
         catch (IOException ex)
         {
@@ -215,7 +214,6 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                 }
                 setProgress(50+i);
             }
-            System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");
         }
         catch (IOException ex)
         {

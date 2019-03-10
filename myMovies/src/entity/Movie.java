@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
         // custom queries
     , @NamedQuery(name = "Movie.findYearAndGenre", query = "SELECT m FROM Movie m WHERE m.releaseDate >= :date1 AND m.releaseDate <= :date2 AND m.genreId = :genreId")
     , @NamedQuery(name = "Movie.findByFavoriteList", query = "SELECT m FROM Movie m WHERE m.favoriteListId = :favoriteListId")        
-    , @NamedQuery(name = "Movie.deleteAll", query = "DELETE FROM Movie")})
+    , @NamedQuery(name = "Movie.deleteAll", query = "DELETE FROM Movie")
+    , @NamedQuery(name = "Movie.findByTitleAndOverview", query = "SELECT m FROM Movie m WHERE m.title = :title AND m.overview = :overview")})
 public class Movie implements Serializable {
 
     private static final long serialVersionUID = 1L;

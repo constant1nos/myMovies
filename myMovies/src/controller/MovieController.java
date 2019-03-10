@@ -39,9 +39,11 @@ public class MovieController extends MainController{
         return (Movie)q.getSingleResult();
     }
     
-    public Movie getMovieByTtitle(String title){
-        Query q = em.createNamedQuery("Movie.findByTitle");
+    /* Αναζήτηση με 2 κριτήρια, ώστε να πάρουμε σίγουρα ένα μόνο αποτέλεσμα */
+    public Movie getMovieByTtitleAndOverview(String title, String overview){
+        Query q = em.createNamedQuery("Movie.findByTitleAndOverview");
         q.setParameter("title", title);
+        q.setParameter("overview", overview);
         return (Movie)q.getSingleResult();               
     }
     
@@ -52,7 +54,7 @@ public class MovieController extends MainController{
         em.getTransaction().commit();
     }
     
-    public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre){
+    public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre, boolean sorted){
         Query q = em.createNamedQuery("Movie.findYearAndGenre");
         Calendar calendar = new GregorianCalendar(selectedYear,0,1);
         Date date1 = calendar.getTime();
@@ -64,6 +66,9 @@ public class MovieController extends MainController{
         q.setParameter("genreId", genre);
         // Μετατροπή List σε ArrayList
         ArrayList<Movie> movies = new ArrayList<>(q.getResultList());
+        if(sorted){
+            Collections.sort(movies, Collections.reverseOrder(Comparator.comparingDouble(Movie::getRating))); 
+        }
         return movies;
     } 
 
