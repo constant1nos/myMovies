@@ -31,7 +31,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -600,6 +603,11 @@ public class MainMenu extends java.awt.Frame {
                 "Τλιτλος Ταινίας", "Βαθμολογία", "Περιγραφή"
             }
         ));
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) searchMovieTable.getModel());
+        searchMovieTable.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+        sorter.setSortKeys(sortKeys);
         searchMovieTable.setGridColor(new java.awt.Color(0, 154, 57));
         searchMovieTable.setSelectionBackground(new java.awt.Color(0, 204, 102));
         searchMovieTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
