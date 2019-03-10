@@ -1,5 +1,5 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package controller;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 public class GenreController extends MainController{
     
@@ -16,6 +16,7 @@ public class GenreController extends MainController{
         super();
     } 
     
+    /* Αποθήκευση ειδών ταινιών στη βάση δεδομένων */
     public void storeGenresToDataBase(ArrayList<Genre> genres){
         em.getTransaction().begin();
         for (Genre genre : genres) {
