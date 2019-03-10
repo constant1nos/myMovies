@@ -56,7 +56,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     // Εύρεση των ταινιών με συγκεκριμένο id και κυκλοφορία μετά την 01/01/2000
     private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=popularity.desc&";
    
-    // Αρχικοποίηση μεταλητών με τον Constructor
+    // Αρχικοποίηση μεταβλητών με τον Constructor
     public CommunicationWorker(){
         rp = new RetrieveProgress();
         progBar = rp.getProgressBar();
@@ -72,7 +72,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         });
     }
     
-    /* Στην συνάρτηση doInBackground γίνεται η εκτέλεση της χρονοβόρας διεργασίας */
+    /* Στην μέθοδο doInBackground γίνεται η εκτέλεση της χρονοβόρας διεργασίας */
     @Override
     protected String doInBackground() throws Exception {
         setProgress(1);         // Στέλνει μηνύματα σχετικά με την πρόοδο του Task (0-100) 
@@ -113,6 +113,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     @Override
     protected void process(List<String> chunks){
         progLabel = rp.getProgressLabel();
+        // Εμφάνιση μηνυμάτων σε μορφή String, σχετικά με την πρόοδο της ανάκτησης και αποθήκευσης δεδομένων
         progLabel.setText(chunks.get(chunks.size()-1));
     }
     
@@ -120,7 +121,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     @Override
     protected void done(){
         rp.setVisible(false);
-        rp.dispose();
+        rp.dispose();       // Κατάργηση του JFrame RetrieveProgress
         JOptionPane.showMessageDialog(null, msg, "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);
     }
     
@@ -175,9 +176,11 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         int id;                 // Κρατάει το id της ταινίας
         try 
         {   
-            //Ανάκτηση δεδομένων ταινιών. Επιτρέπονται max 40 κλήσεις του API
-            //Η κάθε σελίδα επιστρέφει 20 ταινίες. Διαβάζω τις 40 πρώτες σελίδες
-            //Συνολικά έχουμε 800 ταινίες για τη βάση δεδομένων
+            /* 
+             * Ανάκτηση δεδομένων ταινιών. Επιτρέπονται max 40 κλήσεις του API ανά 10 sec
+             * Έχοντας κάνει ήδη μία κλήση για ανάκτηση των ειδών, μένουν άλλες 39
+             * Η κάθε σελίδα περιέχει 20 ταινίες. Επομένως έχουμε συνολικά 780 ταινίες για τη βάση δεδομένων
+             */
             for(int i=1; i < 40; i++){
                 /* Κατασκευή URL για κάθε σελίδα */
                 InputStream is = constructURL(MOVIE_URL_COMMAND+"page="+i+"&"+API_KEY).openStream(); 
