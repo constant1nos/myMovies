@@ -1,5 +1,5 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package controller;
 
@@ -17,7 +17,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 public class MovieController extends MainController{
     
@@ -25,6 +25,7 @@ public class MovieController extends MainController{
         super();
     } 
     
+    /* Αποθήκευση ταινιών στη βάση δεδομένων */
     public void storeMoviesToDataBase(ArrayList<Movie> movies){
         em.getTransaction().begin();
         for (Movie movie : movies) {
@@ -32,7 +33,8 @@ public class MovieController extends MainController{
         }
         em.getTransaction().commit();
     }
-    
+  
+    /* Εύρεση ταινίας με βάση το id */
     public Movie getMovie(int id){
         Query q = em.createNamedQuery("Movie.findById");
         q.setParameter("id", id);
@@ -40,6 +42,7 @@ public class MovieController extends MainController{
     }
     
     /* Αναζήτηση με 2 κριτήρια, ώστε να πάρουμε σίγουρα ένα μόνο αποτέλεσμα */
+    /* Χρησιμοποιείται όταν επιλεγεί από τον χρήστη, προσθήκη μιας ταινίας από JTable σε λίστα*/
     public Movie getMovieByTtitleAndOverview(String title, String overview){
         Query q = em.createNamedQuery("Movie.findByTitleAndOverview");
         q.setParameter("title", title);
@@ -47,13 +50,15 @@ public class MovieController extends MainController{
         return (Movie)q.getSingleResult();               
     }
     
+    /* Προσθήκη ξένου κλειδιού αγαπημένης λίστας, σε μία ταινία */
     public void updateMovie(int movieId, FavoriteList favoriteList){
         Movie movie = em.find(Movie.class, movieId);
         em.getTransaction().begin();
         movie.setFavoriteListId(favoriteList);
         em.getTransaction().commit();
     }
-    
+
+    /* Ανάκτηση ταινιών από τη βάση δεδομένων, όταν ο χρήστης εκτελέσει αναζήτηση βάσει κριτηρίων */    
     public ArrayList<Movie> getSelectedMovies(int selectedYear, Genre genre, boolean sorted){
         Query q = em.createNamedQuery("Movie.findYearAndGenre");
         Calendar calendar = new GregorianCalendar(selectedYear,0,1);
@@ -66,12 +71,14 @@ public class MovieController extends MainController{
         q.setParameter("genreId", genre);
         // Μετατροπή List σε ArrayList
         ArrayList<Movie> movies = new ArrayList<>(q.getResultList());
+        // Εαν ζητήθηκε ταξινόμηση κατά την κλήση της μεθόδου, γίνεται σε αυτό το σημείο        
         if(sorted){
             Collections.sort(movies, Collections.reverseOrder(Comparator.comparingDouble(Movie::getRating))); 
         }
         return movies;
     } 
 
+    /* Ανάκτηση ταινιών από τη βάση δεδομένων για μία αγαπημένη λίστα */        
     public ArrayList<Movie> getMoviesForList(FavoriteList favoriteList){
         Query q = em.createNamedQuery("Movie.findByFavoriteList");
         q.setParameter("favoriteListId", favoriteList);
