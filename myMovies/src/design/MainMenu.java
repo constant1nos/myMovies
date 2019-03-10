@@ -1,5 +1,5 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package design;
 
@@ -45,7 +45,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 public class MainMenu extends java.awt.Frame {
 
@@ -655,6 +655,7 @@ public class MainMenu extends java.awt.Frame {
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         System.exit(0);
     }//GEN-LAST:event_exitForm
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί homeButton */
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
@@ -666,6 +667,7 @@ public class MainMenu extends java.awt.Frame {
         /* Εμφανίζει στη αρχική οθόνη μια από τις καλύτερες 10 ταινίες */
         setMainPanelMovie();        
     }//GEN-LAST:event_homeButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton */
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
         CardLayout card = (CardLayout) optionsBarPanel.getLayout();
@@ -678,16 +680,19 @@ public class MainMenu extends java.awt.Frame {
         statisticsScrollPane1.setVisible(false);      
         statisticsScrollPane2.setVisible(false);          
     }//GEN-LAST:event_statisticsButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton */
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         // έξοδος από την εαφρμογή
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί retrieveButton */
     private void retrieveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_retrieveButtonActionPerformed
         CommunicationWorker cm = new CommunicationWorker();
         cm.execute();
     }//GEN-LAST:event_retrieveButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton */
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
         fillFavoriteList();        
@@ -724,6 +729,7 @@ public class MainMenu extends java.awt.Frame {
         ImageIcon imageIcon = new ImageIcon(bi);
         backGroundImage.setIcon(imageIcon);                    
     }//GEN-LAST:event_backGroundPanelComponentResized
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchButton*/
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         fillFavoriteListComboBox();     // Ενημέρωση του favoriteListComboBox
@@ -740,12 +746,14 @@ public class MainMenu extends java.awt.Frame {
         setYearText.setText("");                    // Να μην εμφανίζεται αρχικά κάτι
         genreComboBox.setSelectedIndex(-1);        
     }//GEN-LAST:event_searchButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί clearContentsButton */
     private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
         setYearText.setText("");
         genreComboBox.setSelectedIndex(-1);
     }//GEN-LAST:event_clearContentsButtonActionPerformed
 
+    /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί κάποιο πλήκτρο στο setYearText*/
     private void setYearTextKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_setYearTextKeyTyped
         char c=evt.getKeyChar();
         if(!(Character.isDigit(c)||c==KeyEvent.VK_BACK_SPACE||c==KeyEvent.VK_DELETE)){
@@ -753,6 +761,7 @@ public class MainMenu extends java.awt.Frame {
             evt.consume();
         }
     }//GEN-LAST:event_setYearTextKeyTyped
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton */
     private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
         /* Αναζήτηση χωρίς ταξινόμηση */
@@ -781,6 +790,7 @@ public class MainMenu extends java.awt.Frame {
             fillFavoriteList();    
         }
     }//GEN-LAST:event_createListButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteListButton */
     private void deleteListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteListButtonActionPerformed
         if(favoriteList.getSelectedValuesList() != null){
@@ -810,6 +820,7 @@ public class MainMenu extends java.awt.Frame {
         }
         fillFavoriteList();        
     }//GEN-LAST:event_deleteListButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί editListButton */
     private void editListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editListButtonActionPerformed
         // Ελέγχουμε εάν επιλέχθηκε κάποιο στοιχείο από τη λίστα αγαπημένων
@@ -842,6 +853,7 @@ public class MainMenu extends java.awt.Frame {
         }
            
     }//GEN-LAST:event_editListButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί deleteFromListButton */
     private void deleteFromListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteFromListButtonActionPerformed
         // Έλεγχος αν επιλέχθηκε εγγραφή από τον πίνακα και λίστα από το jComboBox
@@ -858,9 +870,10 @@ public class MainMenu extends java.awt.Frame {
         else
             JOptionPane.showMessageDialog(null, "Δεν έχει επιλεγεί λίστα και ταινία", "Ενημέρωση", JOptionPane.WARNING_MESSAGE);  
     }//GEN-LAST:event_deleteFromListButtonActionPerformed
+    
     /* Μέθοδος προσθήκης σε λίστα, μιας επιλεγμένης ταινίας */
     private void favoriteListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteListComboBoxActionPerformed
-        // Έλεγχος αν υπάρχει εγγραφή στον πίνακα, αν επιλέχθηκε στοιχείο στο comboBox και αν η μέθοδος κλήθηκε από τον χρήστη
+        /* Έλεγχος αν υπάρχει εγγραφή στον πίνακα, αν επιλέχθηκε στοιχείο στο comboBox και αν η μέθοδος κλήθηκε από τον χρήστη */
         comboBoxActionCounter++;
         if(searchMovieTable.getRowCount() != 0 && favoriteListComboBox.getSelectedItem() != null 
                 && comboBoxActionCounter > 0 && rowFromTableSelected){            
@@ -884,6 +897,7 @@ public class MainMenu extends java.awt.Frame {
             List<Movie> movieList = mc.getMoviesForList(fl);
             /* Εμφάνιση μόνο σε περίπτωση που η λίστα περιέχει ταινίες */
             if(!movieList.isEmpty()){
+                // Δημιουργία του πίνακα
                 DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
                 tModel.setRowCount(0);
                 int colCount = searchMovieTable.getColumnCount();
@@ -905,13 +919,16 @@ public class MainMenu extends java.awt.Frame {
             }
         }
     }//GEN-LAST:event_favoriteListMousePressed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν επιλεγεί κάποια εγγραφή από τον πίνακα searchMovieTable */
     private void searchMovieTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMovieTableMousePressed
         checkSelectedRecordFromTable(); 
     }//GEN-LAST:event_searchMovieTableMousePressed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί topTenButton */
     private void topTenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenButtonActionPerformed
         ArrayList<Movie> topTenMovies = mc.getTopTenMovies();
+        // Δημιουργία του πίνακα
         DefaultTableModel tModel = (DefaultTableModel)topTen.getModel();
         tModel.setRowCount(0);
         int colCount = topTen.getColumnCount();
@@ -929,10 +946,12 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.repaint();
         mainPanelStatistics.validate();        
     }//GEN-LAST:event_topTenButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί topTenPerListButton */
     private void topTenPerListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenPerListButtonActionPerformed
         List<FavoriteList> allFavoriteLists = flc.getFavoriteList();
         ArrayList<Movie> movies = new ArrayList<>();
+        // Δημιουργία του πίνακα        
         DefaultTableModel tModel = (DefaultTableModel)topTenPerList.getModel();
         tModel.setRowCount(0);
         int colCount = topTenPerList.getColumnCount();
@@ -951,6 +970,7 @@ public class MainMenu extends java.awt.Frame {
         mainPanelStatistics.repaint();
         mainPanelStatistics.validate();          
     }//GEN-LAST:event_topTenPerListButtonActionPerformed
+    
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί sortTableButton */
     private void sortTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTableButtonActionPerformed
         /* Αναζήτηση με ταξινόμηση */
@@ -1070,7 +1090,7 @@ public class MainMenu extends java.awt.Frame {
         
     }
     
-    /* Αναζήτηση ταινιών με βάση επιλεγμένων κριτηρίων. Η σημαία sorted δηλώνει αν θα γίνει ταξινόμηση ή όχι */
+    /* Αναζήτηση ταινιών βάσει επιλεγμένων κριτηρίων. Η σημαία sorted δηλώνει αν θα γίνει ταξινόμηση ή όχι */
     private void executeSearch(boolean sorted){
         /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
         favoriteListComboBox.setSelectedIndex(-1); 
@@ -1113,56 +1133,58 @@ public class MainMenu extends java.awt.Frame {
         }
     }
     
+    /*
+     * Μέθοδος, η οποία εμφανίζει στο αρχικό πάνελ μία από τις 10 καλύτερες
+     * ταινίες που υπάρχουν στη βάση δεδομένων. Η μέθοδος αυτή καλείται μία
+     * μόνο φορά, όταν ανοίγει η εφαρμογή ή όταν γίνει ανάκτηση δεδομένων
+     * και πατηθεί το πλήκτρο homeButton. Ελέγχεται από τη σημαία homePanelMovieIsSet
+     */        
     private void setMainPanelMovie(){
-        /* 
-         * Δοκιμαστική προβολή δεδομένων μιας ταινίας για εμφάνιση στην αρχική οθόνη 
-         * Θα δημιουργηθεί μέθοδος (σύντομα) η οποία θα διαβάζει από τη βάση μια ταινία 
-         * και θα εμφανίζει στοιχεία και εικόνα στην οθόνη 
-         */
         if(!homePanelMovieIsSet){
-        Random random = new Random();
-        int r = random.nextInt((9 - 0) + 1) + 0;
-        try{
-            // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-            ArrayList<Movie> movies = mc.getTopTenMovies();
-            Movie movie = movies.get(r);                // Επιλογή κάποιας από τις καλύτερες ταινίες
-            movieTitle.setText(movie.getTitle());
-            movieOverview.setText(movie.getOverview());
-            movieScoreLabel.setText(movie.getRating().toString());
-            URL url = new URL("https://api.themoviedb.org/3/movie/"+movie.getId()+"?api_key=bf92a1466e3a994ab59eb0886780f564&language=en-US"); 
-            InputStream is = url.openStream();            
-            InputStreamReader isr = new InputStreamReader(is); 
-            JsonElement jElement = new JsonParser().parse(isr); 
-            JsonObject mainJsonObject = jElement.getAsJsonObject(); 
-            String posterPath = mainJsonObject.get("poster_path").getAsString();
-            url = new URL("https://image.tmdb.org/t/p/w200/"+posterPath);
-            Image image = ImageIO.read(url);
-            ImageIcon icon = new ImageIcon(image);
-            posterLabel.setIcon(icon);  
-            homePanelMovieIsSet = true;
-            posterLabel.setVisible(true);
-            movieTitle.setVisible(true);
-            movieScrollPane.setVisible(true);
-            titleLabel.setVisible(true);
-            movieTitleLabel.setVisible(true);
-            overviewLabel.setVisible(true);
-            scoreLabel.setVisible(true);
-            movieScoreLabel.setVisible(true);            
-        }
-        // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
-        catch(NoResultException nre){
-            homePanelMovieIsSet = false;
-            posterLabel.setVisible(false);
-            movieTitle.setVisible(false);
-            movieScrollPane.setVisible(false);
-            titleLabel.setVisible(false);
-            movieTitleLabel.setVisible(false);
-            overviewLabel.setVisible(false);
-            scoreLabel.setVisible(false);
-            movieScoreLabel.setVisible(false);
-        } catch (IOException ex) {
-            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            Random random = new Random();
+            int r = random.nextInt((9 - 0) + 1) + 0;
+            try{
+                // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
+                ArrayList<Movie> movies = mc.getTopTenMovies();
+                Movie movie = movies.get(r);                // Επιλογή κάποιας από τις καλύτερες ταινίες
+                movieTitle.setText(movie.getTitle());
+                movieOverview.setText(movie.getOverview());
+                movieScoreLabel.setText(movie.getRating().toString());
+                URL url = new URL("https://api.themoviedb.org/3/movie/"+movie.getId()+"?api_key=bf92a1466e3a994ab59eb0886780f564&language=en-US"); 
+                InputStream is = url.openStream();            
+                InputStreamReader isr = new InputStreamReader(is); 
+                JsonElement jElement = new JsonParser().parse(isr); 
+                JsonObject mainJsonObject = jElement.getAsJsonObject(); 
+                String posterPath = mainJsonObject.get("poster_path").getAsString();
+                url = new URL("https://image.tmdb.org/t/p/w200/"+posterPath);
+                Image image = ImageIO.read(url);
+                ImageIcon icon = new ImageIcon(image);
+                posterLabel.setIcon(icon);  
+                homePanelMovieIsSet = true;
+                posterLabel.setVisible(true);
+                movieTitle.setVisible(true);
+                movieScrollPane.setVisible(true);
+                titleLabel.setVisible(true);
+                movieTitleLabel.setVisible(true);
+                overviewLabel.setVisible(true);
+                scoreLabel.setVisible(true);
+                movieScoreLabel.setVisible(true);            
+            }
+            /* Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση */
+            /* Τότε δεν εμφανίζεται τίποτα στο κεντρικό πάνελ */
+            catch(NoResultException nre){
+                homePanelMovieIsSet = false;
+                posterLabel.setVisible(false);
+                movieTitle.setVisible(false);
+                movieScrollPane.setVisible(false);
+                titleLabel.setVisible(false);
+                movieTitleLabel.setVisible(false);
+                overviewLabel.setVisible(false);
+                scoreLabel.setVisible(false);
+                movieScoreLabel.setVisible(false);
+            } catch (IOException ex) {
+                Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     /**
