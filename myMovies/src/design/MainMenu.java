@@ -41,7 +41,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -514,11 +517,11 @@ public class MainMenu extends java.awt.Frame {
         scoreLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         scoreLabel.setForeground(new java.awt.Color(255, 255, 255));
         scoreLabel.setText("Βαθμολογία");
-        mainPanelHome.add(scoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 66, 85, 20));
+        mainPanelHome.add(scoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(665, 66, 90, 20));
 
         movieScoreLabel.setForeground(new java.awt.Color(255, 255, 255));
         movieScoreLabel.setText("jLabel5");
-        mainPanelHome.add(movieScoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(831, 88, 85, 20));
+        mainPanelHome.add(movieScoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(666, 88, 80, 20));
 
         mainPanel.add(mainPanelHome, "homeCard");
         mainPanelHome.getAccessibleContext().setAccessibleName("");
@@ -765,8 +768,8 @@ public class MainMenu extends java.awt.Frame {
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchMoviesButton */
     private void searchMoviesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchMoviesButtonActionPerformed
         /* Αναζήτηση χωρίς ταξινόμηση */
-        executeSearch(false);
         /* Εμφάνιση πλήκτρου ταξινόμησης, αν υπάρχουν περισσότερες από 2 ταινίες */
+        executeSearch();
         if(searchMovieTable.getRowCount() > 2){
             sortTableButton.setVisible(true);
         }
@@ -973,8 +976,12 @@ public class MainMenu extends java.awt.Frame {
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί sortTableButton */
     private void sortTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortTableButtonActionPerformed
-        /* Αναζήτηση με ταξινόμηση */
-        executeSearch(true);           
+        /* Αναζήτηση με ταξινόμηση */    
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) searchMovieTable.getModel());
+        searchMovieTable.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+        sorter.setSortKeys(sortKeys);
     }//GEN-LAST:event_sortTableButtonActionPerformed
 
     /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
@@ -1090,8 +1097,14 @@ public class MainMenu extends java.awt.Frame {
         
     }
     
-    /* Αναζήτηση ταινιών βάσει επιλεγμένων κριτηρίων. Η σημαία sorted δηλώνει αν θα γίνει ταξινόμηση ή όχι */
-    private void executeSearch(boolean sorted){
+    /* Αναζήτηση ταινιών βάσει επιλεγμένων κριτηρίων */
+    private void executeSearch(){
+        // Να μη γίνεται ταξινόμηση με την αναζήτηση
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) searchMovieTable.getModel());
+        searchMovieTable.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.UNSORTED));
+        sorter.setSortKeys(sortKeys);
         /* Έλεγχος ορθής εισαγωγής χρονιάς από τον χρήστη */
         favoriteListComboBox.setSelectedIndex(-1); 
         rowFromTableSelected = false;   // reset σημαίας       
@@ -1107,7 +1120,7 @@ public class MainMenu extends java.awt.Frame {
          */
         if(genreComboBox.getSelectedItem() != null && userInput >= 2000 && userInput <= 2030 && !setYearText.getText().equals("")){
             Genre g = (Genre)genreComboBox.getSelectedItem();
-            List<Movie> movieList = mc.getSelectedMovies(userInput, g, sorted);
+            List<Movie> movieList = mc.getSelectedMovies(userInput, g);
             /* Εμφάνιση πίνακα μόνο στην περίπτωση που περιέχει ταινίες */
             if(!movieList.isEmpty()){
                 DefaultTableModel tModel = (DefaultTableModel) searchMovieTable.getModel();
@@ -1142,7 +1155,7 @@ public class MainMenu extends java.awt.Frame {
     private void setMainPanelMovie(){
         if(!homePanelMovieIsSet){
             Random random = new Random();
-            int r = random.nextInt((9 - 0) + 1) + 0;
+            int r = random.nextInt(9);
             try{
                 // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
                 ArrayList<Movie> movies = mc.getTopTenMovies();
