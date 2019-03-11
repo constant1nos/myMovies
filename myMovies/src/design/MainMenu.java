@@ -485,7 +485,7 @@ public class MainMenu extends java.awt.Frame {
 
         movieTitle.setForeground(new java.awt.Color(255, 255, 255));
         movieTitle.setText("jLabel2");
-        mainPanelHome.add(movieTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(416, 88, -1, 20));
+        mainPanelHome.add(movieTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(416, 38, 510, 20));
 
         movieScrollPane.setOpaque(false);
 
@@ -507,7 +507,7 @@ public class MainMenu extends java.awt.Frame {
         movieTitleLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         movieTitleLabel.setForeground(new java.awt.Color(255, 255, 255));
         movieTitleLabel.setText("Τίτλος Ταινίας");
-        mainPanelHome.add(movieTitleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 66, -1, -1));
+        mainPanelHome.add(movieTitleLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 15, -1, 20));
 
         overviewLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         overviewLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -517,11 +517,11 @@ public class MainMenu extends java.awt.Frame {
         scoreLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         scoreLabel.setForeground(new java.awt.Color(255, 255, 255));
         scoreLabel.setText("Βαθμολογία");
-        mainPanelHome.add(scoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(665, 66, 90, 20));
+        mainPanelHome.add(scoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(415, 76, 100, 20));
 
         movieScoreLabel.setForeground(new java.awt.Color(255, 255, 255));
         movieScoreLabel.setText("jLabel5");
-        mainPanelHome.add(movieScoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(666, 88, 80, 20));
+        mainPanelHome.add(movieScoreLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(416, 94, 50, 30));
 
         mainPanel.add(mainPanelHome, "homeCard");
         mainPanelHome.getAccessibleContext().setAccessibleName("");
