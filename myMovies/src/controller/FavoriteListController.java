@@ -50,6 +50,12 @@ public class FavoriteListController extends MainController{
     public FavoriteList getFavoriteListByName(String name){
         Query q = em.createNamedQuery("FavoriteList.findByName");
         q.setParameter("name", name);
-        return (FavoriteList)q.getSingleResult(); 
+        List<FavoriteList> found = q.getResultList();
+        if (found.isEmpty()) {
+            return null; //or throw checked exception data not found
+        } else {
+            return found.get(0);
+        }
+
     }
 }

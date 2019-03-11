@@ -3,12 +3,15 @@
  */
 package design;
 
+import controller.FavoriteListController;
+import entity.FavoriteList;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
@@ -26,6 +29,7 @@ public class CreateNewList extends javax.swing.JDialog {
      * A return status code - returned if OK button has been pressed
      */
     public static final int RET_OK = 1;
+    private final FavoriteListController flc = new FavoriteListController();
 
     /**
      * Creates new form CreateNewList
@@ -157,6 +161,9 @@ public class CreateNewList extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        if (!validateData()) {
+            return;
+        }
         doClose(RET_OK);
     }//GEN-LAST:event_saveButtonActionPerformed
 
@@ -177,6 +184,35 @@ public class CreateNewList extends javax.swing.JDialog {
         setVisible(false);
         dispose();
     }
+    
+    /* Μέθοδος με την οποία ελέγχουμε εάν  έχουμε δώσει όλα τα δεδομένα και
+    εάν είναι σωστά , αν είναι τότε μόνο μπορεί να γίνει αποθήκευση*/
+    private boolean validateData() {
+
+        // Έλεγχος του ονόματος
+        String lname = userNamedText.getText().trim();
+        if (lname.equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Δεν έχετε δώσει το όνομα της λίστας!",
+                    "Ελλειπή στοιχεία", JOptionPane.OK_OPTION);
+            userNamedText.requestFocus();
+            return false;
+        }
+       
+        /*Ελεγχος εάν η λίστα είναι  τρέχων (μεταβολή λίστας) ή
+        όχι (εισαγωγή λίστας*/
+       FavoriteList fl = flc.getFavoriteListByName(lname);
+        if (fl!=null) {
+            JOptionPane.showMessageDialog(this,
+                    "Υπάρχει ήδη λίστα μ' αυτό το όνομα!",
+                    "Λάθος στοιχεία", JOptionPane.OK_OPTION);
+            userNamedText.requestFocus();
+            return false;
+        }
+        // Αν όλα τα στοιχεία είναι εντάξει επιστρέφουμε true
+        return true;
+    }
+    
 
     /**
      * @param args the command line arguments
