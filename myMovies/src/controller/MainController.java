@@ -1,5 +1,5 @@
 /*
- * Created by Batzonis Constantinos - Klianis Christos - Servozlidis Giwrgos
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package controller;
 
@@ -9,12 +9,14 @@ import javax.persistence.Query;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
+/* Γενική κλάση διαχείρισης της βάσης δεδομένων */
 public abstract class MainController {
     
     protected EntityManager em;
     
+    // Δημιουργία EntityManager
     public MainController(){
         DBManager dbManager = DBManager.getInstance();
         em = dbManager.getEm();

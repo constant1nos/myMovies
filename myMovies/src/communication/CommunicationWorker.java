@@ -1,5 +1,5 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package communication;
 
@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import controller.FavoriteListController;
 import entity.Genre;
 import entity.Movie;
 import java.beans.PropertyChangeEvent;
@@ -34,7 +35,7 @@ import javax.swing.SwingWorker;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 /* Δημιουργία κλάσης SwingWorker, η οποία είναι ειδικά σχεδιασμένη για Swing
  * και μας επιτρέπει να εκτελούμε χρονοβόρα tasks σε ένα καινούριο Thread.
@@ -55,7 +56,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     // Εύρεση των ταινιών με συγκεκριμένο id και κυκλοφορία μετά την 01/01/2000
     private static final String MOVIE_URL_COMMAND = "https://api.themoviedb.org/3/discover/movie?with_genres=28|878|10749&primary_release_date.gte=2000-01-01T00:00:00&sort_by=popularity.desc&";
    
-    // Αρχικοποίηση μεταλητών με τον Constructor
+    // Αρχικοποίηση μεταβλητών με τον Constructor
     public CommunicationWorker(){
         rp = new RetrieveProgress();
         progBar = rp.getProgressBar();
@@ -71,18 +72,20 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         });
     }
     
-    /* Στην συνάρτηση doInBackground γίνεται η εκτέλεση της χρονοβόρας διεργασίας */
+    /* Στην μέθοδο doInBackground γίνεται η εκτέλεση της χρονοβόρας διεργασίας */
     @Override
     protected String doInBackground() throws Exception {
         setProgress(1);         // Στέλνει μηνύματα σχετικά με την πρόοδο του Task (0-100) 
         publish("Αρχικοποίηση...");
         GenreController gc = new GenreController();
         MovieController mc = new MovieController();
+        FavoriteListController flc = new FavoriteListController();
         setProgress(10);
         publish("Διαγραφή δεδομένων από τη βάση...");
         // Διαγραφή δεδομένων από τη βάση
         gc.deleteFromDataBase("Genre.deleteAll");
         mc.deleteFromDataBase("Movie.deleteAll");
+        flc.deleteFromDataBase("FavoriteList.deleteAll");
         // Αποθήκευση δεδομένων στη βάση
         setProgress(30);
         publish("Ανάκτηση ειδών ταινιών...");
@@ -110,6 +113,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     @Override
     protected void process(List<String> chunks){
         progLabel = rp.getProgressLabel();
+        // Εμφάνιση μηνυμάτων σε μορφή String, σχετικά με την πρόοδο της ανάκτησης και αποθήκευσης δεδομένων
         progLabel.setText(chunks.get(chunks.size()-1));
     }
     
@@ -117,12 +121,12 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     @Override
     protected void done(){
         rp.setVisible(false);
-        rp.dispose();
+        rp.dispose();       // Κατάργηση του JFrame RetrieveProgress
         JOptionPane.showMessageDialog(null, msg, "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);
     }
     
     /* Ανάκτηση ειδών ταινιών από το API */
-    public ArrayList<Genre> getGenres(){
+    private ArrayList<Genre> getGenres(){
     String genreName;
     ArrayList<Genre> genres = new ArrayList<Genre>(3);
         try
@@ -154,7 +158,6 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                     genres.add(genre);
                 }
             }
-            System.out.println("Η ανάκτηση των ειδών ήταν επιτυχής");
         }
         catch (IOException ex)
         {
@@ -165,7 +168,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     }
     
     /* Ανάκτηση ταινιών που ανήκουν στα επιθυμητά είδη από το API */
-    public ArrayList<Movie> getMovies() throws ParseException{  
+    private ArrayList<Movie> getMovies() throws ParseException{  
         ArrayList<Movie> movies = new ArrayList<Movie>(); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         JsonArray movieGenres;  // Κρατάει τα είδη στα οποία ανήκει μια ταινία
@@ -173,9 +176,11 @@ public class CommunicationWorker extends SwingWorker<String, String>{
         int id;                 // Κρατάει το id της ταινίας
         try 
         {   
-            //Ανάκτηση δεδομένων ταινιών. Επιτρέπονται max 40 κλήσεις του API
-            //Η κάθε σελίδα επιστρέφει 20 ταινίες. Διαβάζω τις 40 πρώτες σελίδες
-            //Συνολικά έχουμε 800 ταινίες για τη βάση δεδομένων
+            /* 
+             * Ανάκτηση δεδομένων ταινιών. Επιτρέπονται max 40 κλήσεις του API ανά 10 sec
+             * Έχοντας κάνει ήδη μία κλήση για ανάκτηση των ειδών, μένουν άλλες 39
+             * Η κάθε σελίδα περιέχει 20 ταινίες. Επομένως έχουμε συνολικά 780 ταινίες για τη βάση δεδομένων
+             */
             for(int i=1; i < 40; i++){
                 /* Κατασκευή URL για κάθε σελίδα */
                 InputStream is = constructURL(MOVIE_URL_COMMAND+"page="+i+"&"+API_KEY).openStream(); 
@@ -212,7 +217,6 @@ public class CommunicationWorker extends SwingWorker<String, String>{
                 }
                 setProgress(50+i);
             }
-            System.out.println("Η ανάκτηση των ταινιών ήταν επιτυχής");
         }
         catch (IOException ex)
         {

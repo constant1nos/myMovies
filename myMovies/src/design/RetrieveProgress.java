@@ -36,7 +36,7 @@ public class RetrieveProgress extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 31, 31));
 
-        jPanel1.setBackground(new java.awt.Color(0, 31, 31));
+        jPanel1.setBackground(new java.awt.Color(21, 21, 21));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

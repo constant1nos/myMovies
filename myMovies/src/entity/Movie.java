@@ -1,5 +1,5 @@
 /*
- * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σερβοζλίδης Γιώργος - Χαντζή Στεφανία
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package entity;
 
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 @Entity
 @Table(name = "MOVIE")
@@ -32,7 +32,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Movie.findByReleaseDate", query = "SELECT m FROM Movie m WHERE m.releaseDate = :releaseDate")
     , @NamedQuery(name = "Movie.findByRating", query = "SELECT m FROM Movie m WHERE m.rating = :rating")
     , @NamedQuery(name = "Movie.findByOverview", query = "SELECT m FROM Movie m WHERE m.overview = :overview")
-    , @NamedQuery(name = "Movie.deleteAll", query = "DELETE FROM Movie")})
+        // custom queries
+    , @NamedQuery(name = "Movie.findYearAndGenre", query = "SELECT m FROM Movie m WHERE m.releaseDate >= :date1 AND m.releaseDate <= :date2 AND m.genreId = :genreId")
+    , @NamedQuery(name = "Movie.findByFavoriteList", query = "SELECT m FROM Movie m WHERE m.favoriteListId = :favoriteListId")        
+    , @NamedQuery(name = "Movie.deleteAll", query = "DELETE FROM Movie")
+    , @NamedQuery(name = "Movie.findByTitleAndOverview", query = "SELECT m FROM Movie m WHERE m.title = :title AND m.overview = :overview")})
 public class Movie implements Serializable {
 
     private static final long serialVersionUID = 1L;

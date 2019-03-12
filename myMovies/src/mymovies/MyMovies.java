@@ -1,5 +1,5 @@
 /*
- * Created by Batzonis Constantinos
+ * Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 package mymovies;
 import communication.DBManager;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author dinob
+ * @author Κλιάνης Χρήστος - Μπατζώνης Κωνσταντίνος - Σεβοζλίδης Γιώργος - Χαντζή Στεφανία
  */
 public class MyMovies {
 
