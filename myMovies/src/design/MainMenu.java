@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -64,11 +65,16 @@ public class MainMenu extends java.awt.Frame {
      * Creates new form MainMenu
      * @throws java.net.MalformedURLException
      */
-    public MainMenu() throws MalformedURLException, IOException, NoResultException {
+    public MainMenu() throws MalformedURLException, IOException, NoResultException, PersistenceException {
+        try{
         /* Αρχικοποίηση components της εφαρμογής. Δημιουργείται αυτόματα */
         initComponents();
         /* Αρχικοποίηση και ανάθεση τιμών σε μεταβλητές */
         setup();
+        /* Κλείσιμο του προγράμματος αν δεν έχει γίνει σύνδεση με τη βάση δεδομένων */
+        }catch(PersistenceException pe){
+            System.exit(0);
+        }
     }
 
     /**
@@ -673,15 +679,18 @@ public class MainMenu extends java.awt.Frame {
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton */
     private void statisticsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsButtonActionPerformed
-        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
-        card.show(optionsBarPanel, "statisticsPanel");
-        mainPanelHome.setVisible(false);
-        mainPanelFavorite.setVisible(false);
-        mainPanelStatistics.setVisible(true);
-        mainPanelStatistics.setBackground(new Color(0,204,102,40));        
-        mainPanelSearch.setVisible(false);     
-        statisticsScrollPane1.setVisible(false);      
-        statisticsScrollPane2.setVisible(false);          
+        // Έλεγχος αν εμφανίζεται ήδη το συγκεκριμένο panel
+        if(!mainPanelStatistics.isVisible()){
+            CardLayout card = (CardLayout) optionsBarPanel.getLayout();
+            card.show(optionsBarPanel, "statisticsPanel");
+            mainPanelHome.setVisible(false);
+            mainPanelFavorite.setVisible(false);
+            mainPanelStatistics.setVisible(true);
+            mainPanelStatistics.setBackground(new Color(0,204,102,40));        
+            mainPanelSearch.setVisible(false);     
+            statisticsScrollPane1.setVisible(false);      
+            statisticsScrollPane2.setVisible(false);
+        }
     }//GEN-LAST:event_statisticsButtonActionPerformed
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί exitButton */
@@ -698,15 +707,18 @@ public class MainMenu extends java.awt.Frame {
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί favoriteButton */
     private void favoriteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favoriteButtonActionPerformed
-        fillFavoriteList();        
-        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
-        card.show(optionsBarPanel, "favoritePanel");
-        jScrollPane1.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας
-        mainPanelFavorite.setBackground(new Color(0,204,102,40));
-        mainPanelHome.setVisible(false);
-        mainPanelFavorite.setVisible(true);
-        mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);     
+        // Έλεγχος αν εμφανίζεται ήδη το συγκεκριμένο panel
+        if(!mainPanelFavorite.isVisible()){
+            fillFavoriteList();        
+            CardLayout card = (CardLayout) optionsBarPanel.getLayout();
+            card.show(optionsBarPanel, "favoritePanel");
+            jScrollPane1.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας
+            mainPanelFavorite.setBackground(new Color(0,204,102,40));
+            mainPanelHome.setVisible(false);
+            mainPanelFavorite.setVisible(true);
+            mainPanelStatistics.setVisible(false);
+            mainPanelSearch.setVisible(false);
+        }
     }//GEN-LAST:event_favoriteButtonActionPerformed
 
     /* 
@@ -735,19 +747,22 @@ public class MainMenu extends java.awt.Frame {
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί searchButton*/
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        fillFavoriteListComboBox();     // Ενημέρωση του favoriteListComboBox
-        favoriteListComboBox.setSelectedIndex(-1);
-        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
-        card.show(optionsBarPanel, "searchPanel");
-        movieTableScrollPane.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας   
-        mainPanelSearch.setBackground(new Color(0,204,102,40));        
-        mainPanelHome.setVisible(false);
-        mainPanelFavorite.setVisible(false);
-        mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(true);  
-        sortTableButton.setVisible(false);          // Απόκρυψη button ταξινόμησης
-        setYearText.setText("");                    // Να μην εμφανίζεται αρχικά κάτι
-        genreComboBox.setSelectedIndex(-1);        
+        // Έλεγχος αν εμφανίζεται ήδη το συγκεκριμένο panel        
+        if(!mainPanelSearch.isVisible()){
+            fillFavoriteListComboBox();     // Ενημέρωση του favoriteListComboBox
+            favoriteListComboBox.setSelectedIndex(-1);
+            CardLayout card = (CardLayout) optionsBarPanel.getLayout();
+            card.show(optionsBarPanel, "searchPanel");
+            movieTableScrollPane.setVisible(false);     // Αρχικά να μην εμφανίζεται πίνακας   
+            mainPanelSearch.setBackground(new Color(0,204,102,40));        
+            mainPanelHome.setVisible(false);
+            mainPanelFavorite.setVisible(false);
+            mainPanelStatistics.setVisible(false);
+            mainPanelSearch.setVisible(true);  
+            sortTableButton.setVisible(false);          // Απόκρυψη button ταξινόμησης
+            setYearText.setText("");                    // Να μην εμφανίζεται αρχικά κάτι
+            genreComboBox.setSelectedIndex(-1);  
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί clearContentsButton */
