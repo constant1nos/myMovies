@@ -126,7 +126,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     }
     
     /* Ανάκτηση ειδών ταινιών από το API */
-    public ArrayList<Genre> getGenres(){
+    private ArrayList<Genre> getGenres(){
     String genreName;
     ArrayList<Genre> genres = new ArrayList<Genre>(3);
         try
@@ -168,7 +168,7 @@ public class CommunicationWorker extends SwingWorker<String, String>{
     }
     
     /* Ανάκτηση ταινιών που ανήκουν στα επιθυμητά είδη από το API */
-    public ArrayList<Movie> getMovies() throws ParseException{  
+    private ArrayList<Movie> getMovies() throws ParseException{  
         ArrayList<Movie> movies = new ArrayList<Movie>(); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         JsonArray movieGenres;  // Κρατάει τα είδη στα οποία ανήκει μια ταινία
