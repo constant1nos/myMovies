@@ -667,14 +667,17 @@ public class MainMenu extends java.awt.Frame {
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί homeButton */
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
-        CardLayout card = (CardLayout) optionsBarPanel.getLayout();
-        card.show(optionsBarPanel, "homePanel");
-        mainPanelHome.setVisible(true);
-        mainPanelFavorite.setVisible(false);
-        mainPanelStatistics.setVisible(false);
-        mainPanelSearch.setVisible(false);
-        /* Εμφανίζει στη αρχική οθόνη μια από τις καλύτερες 10 ταινίες */
-        setMainPanelMovie();        
+        // Έλεγχος αν εμφανίζεται ήδη το συγκεκριμένο panel
+        if(!mainPanelHome.isVisible()){        
+            CardLayout card = (CardLayout) optionsBarPanel.getLayout();
+            card.show(optionsBarPanel, "homePanel");
+            mainPanelHome.setVisible(true);
+            mainPanelFavorite.setVisible(false);
+            mainPanelStatistics.setVisible(false);
+            mainPanelSearch.setVisible(false);
+            /* Εμφανίζει στη αρχική οθόνη μια από τις καλύτερες 10 ταινίες */
+            setMainPanelMovie();
+        }
     }//GEN-LAST:event_homeButtonActionPerformed
     
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί statisticsButton */
@@ -950,17 +953,19 @@ public class MainMenu extends java.awt.Frame {
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί το κουμπί topTenButton */
     private void topTenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTenButtonActionPerformed
         ArrayList<Movie> topTenMovies = mc.getTopTenMovies();
-        // Δημιουργία του πίνακα
-        DefaultTableModel tModel = (DefaultTableModel)topTen.getModel();
-        tModel.setRowCount(0);
-        int colCount = topTen.getColumnCount();
-        Object[] ob = new Object[colCount];
-        for(Movie m : topTenMovies){
-            for(int row = 0; row < topTenMovies.size(); row++){
-                ob[0] = m.getTitle();
-                ob[1] = m.getRating();
+        if(topTenMovies != null){
+            // Δημιουργία του πίνακα
+            DefaultTableModel tModel = (DefaultTableModel)topTen.getModel();
+            tModel.setRowCount(0);
+            int colCount = topTen.getColumnCount();
+            Object[] ob = new Object[colCount];
+            for(Movie m : topTenMovies){
+                for(int row = 0; row < topTenMovies.size(); row++){
+                    ob[0] = m.getTitle();
+                    ob[1] = m.getRating();
+                }
+                tModel.addRow(ob);
             }
-            tModel.addRow(ob);
         }
         mainPanelStatistics.setBackground(new Color(102,102,102));        
         statisticsScrollPane1.setVisible(true); 
