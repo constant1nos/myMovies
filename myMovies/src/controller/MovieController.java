@@ -87,6 +87,7 @@ public class MovieController extends MainController{
     public ArrayList<Movie> getTopTenMovies(){
         Query q = em.createNamedQuery("Movie.findAll");
         List<Movie> movies = q.getResultList();
+        if(!movies.isEmpty()){
         // Ταξινόμηση ταινιών κατά φθίνουσα βαθμολογία
         Collections.sort(movies, Collections.reverseOrder(Comparator.comparingDouble(Movie::getRating)));
         ArrayList<Movie> topTenMovies = new ArrayList<>();  
@@ -95,6 +96,9 @@ public class MovieController extends MainController{
             topTenMovies.add(movies.get(i));
         }
         return topTenMovies;
+        }
+        else
+            return null;
     }
       
 }

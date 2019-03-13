@@ -761,7 +761,8 @@ public class MainMenu extends java.awt.Frame {
             mainPanelSearch.setVisible(true);  
             sortTableButton.setVisible(false);          // Απόκρυψη button ταξινόμησης
             setYearText.setText("");                    // Να μην εμφανίζεται αρχικά κάτι
-            genreComboBox.setSelectedIndex(-1);  
+            genreComboBox.setSelectedIndex(-1);
+            rowFromTableSelected = false;            
         }
     }//GEN-LAST:event_searchButtonActionPerformed
     
@@ -769,6 +770,7 @@ public class MainMenu extends java.awt.Frame {
     private void clearContentsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearContentsButtonActionPerformed
         setYearText.setText("");
         genreComboBox.setSelectedIndex(-1);
+        movieTableScrollPane.setVisible(false);
     }//GEN-LAST:event_clearContentsButtonActionPerformed
 
     /* Μέθοδος εκτέλεσης ενεργειών, όταν πατηθεί κάποιο πλήκτρο στο setYearText*/
@@ -833,7 +835,8 @@ public class MainMenu extends java.awt.Frame {
                     }
                     // Έπειτα γίνεται διαγραφή της λίστας από τη βάση δεδομένων
                     flc.deleteFavoriteFromDataBase(favoriteList.getSelectedValuesList().get(i));                    
-                }               
+                } 
+                jScrollPane1.setVisible(false); 
             }
         }
         fillFavoriteList();        
@@ -933,7 +936,8 @@ public class MainMenu extends java.awt.Frame {
                 jScrollPane1.setVisible(true);                
             }
             else{
-                JOptionPane.showMessageDialog(null, "Δεν υπάρχουν ταινίες για την επιλεγμένη λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);               
+                JOptionPane.showMessageDialog(null, "Δεν υπάρχουν ταινίες για την επιλεγμένη λίστα", "Μήνυμα", JOptionPane.INFORMATION_MESSAGE);    
+                jScrollPane1.setVisible(false);                 
             }
         }
     }//GEN-LAST:event_favoriteListMousePressed
@@ -977,10 +981,12 @@ public class MainMenu extends java.awt.Frame {
         for(int i = 0; i < allFavoriteLists.size(); i++){
             movies.clear();
             movies = mc.getMoviesForList(allFavoriteLists.get(i));
-            // Εύρεση ταινίας με τη μεγαλύτερη βαθμολογία
-            Movie movie = Collections.max(movies, Comparator.comparingDouble(Movie::getRating));
-            ob[0] = movie.getTitle();
-            tModel.addRow(ob);
+            if(!movies.isEmpty()){
+                // Εύρεση ταινίας με τη μεγαλύτερη βαθμολογία
+                Movie movie = Collections.max(movies, Comparator.comparingDouble(Movie::getRating));
+                ob[0] = movie.getTitle();
+                tModel.addRow(ob);
+            }
         }       
         mainPanelStatistics.setBackground(new Color(102,102,102));
         statisticsScrollPane1.setVisible(false);        
@@ -1174,29 +1180,31 @@ public class MainMenu extends java.awt.Frame {
             try{
                 // Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση
                 ArrayList<Movie> movies = mc.getTopTenMovies();
-                Movie movie = movies.get(r);                // Επιλογή κάποιας από τις καλύτερες ταινίες
-                movieTitle.setText(movie.getTitle());
-                movieOverview.setText(movie.getOverview());
-                movieScoreLabel.setText(movie.getRating().toString());
-                URL url = new URL("https://api.themoviedb.org/3/movie/"+movie.getId()+"?api_key=bf92a1466e3a994ab59eb0886780f564&language=en-US"); 
-                InputStream is = url.openStream();            
-                InputStreamReader isr = new InputStreamReader(is); 
-                JsonElement jElement = new JsonParser().parse(isr); 
-                JsonObject mainJsonObject = jElement.getAsJsonObject(); 
-                String posterPath = mainJsonObject.get("poster_path").getAsString();
-                url = new URL("https://image.tmdb.org/t/p/w200/"+posterPath);
-                Image image = ImageIO.read(url);
-                ImageIcon icon = new ImageIcon(image);
-                posterLabel.setIcon(icon);  
-                homePanelMovieIsSet = true;
-                posterLabel.setVisible(true);
-                movieTitle.setVisible(true);
-                movieScrollPane.setVisible(true);
-                titleLabel.setVisible(true);
-                movieTitleLabel.setVisible(true);
-                overviewLabel.setVisible(true);
-                scoreLabel.setVisible(true);
-                movieScoreLabel.setVisible(true);            
+                if(movies != null){
+                    Movie movie = movies.get(r);                // Επιλογή κάποιας από τις καλύτερες ταινίες
+                    movieTitle.setText(movie.getTitle());
+                    movieOverview.setText(movie.getOverview());
+                    movieScoreLabel.setText(movie.getRating().toString());
+                    URL url = new URL("https://api.themoviedb.org/3/movie/"+movie.getId()+"?api_key=bf92a1466e3a994ab59eb0886780f564&language=en-US"); 
+                    InputStream is = url.openStream();            
+                    InputStreamReader isr = new InputStreamReader(is); 
+                    JsonElement jElement = new JsonParser().parse(isr); 
+                    JsonObject mainJsonObject = jElement.getAsJsonObject(); 
+                    String posterPath = mainJsonObject.get("poster_path").getAsString();
+                    url = new URL("https://image.tmdb.org/t/p/w200/"+posterPath);
+                    Image image = ImageIO.read(url);
+                    ImageIcon icon = new ImageIcon(image);
+                    posterLabel.setIcon(icon);  
+                    homePanelMovieIsSet = true;
+                    posterLabel.setVisible(true);
+                    movieTitle.setVisible(true);
+                    movieScrollPane.setVisible(true);
+                    titleLabel.setVisible(true);
+                    movieTitleLabel.setVisible(true);
+                    overviewLabel.setVisible(true);
+                    scoreLabel.setVisible(true);
+                    movieScoreLabel.setVisible(true);  
+                }
             }
             /* Προσθήκη Exception σε περίπτωση που δεν υπάρχουν δεδομένα στη βάση */
             /* Τότε δεν εμφανίζεται τίποτα στο κεντρικό πάνελ */
