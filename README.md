@@ -1,8 +1,6 @@
 ![alt text](https://www.eap.gr/images/logo_eap_new.png)
 
-![](myMovies/src/resources/tmdb_small.png)
-
-# Project myMovies
+# Project myMovies   ![](myMovies/src/resources/tmdb_small.png)
 A java application with GUI for searching and managing movies from a database
 
 Developed by Team4 - HLE4 - PLH24 - 2019 Java Based Application
