@@ -9,7 +9,7 @@ This is a team project created in java with NetBeans 8.0. It is a part of exersi
 
 Its purpose is to communicate with themoviedb.org API and download three specific genres from movies with some attributes. These movies are stored locally in a database and from there the user can search, delete or save any of them. The user can also create and manage playlists where he can update with movies from tha database.
 
-![](myMovies/src/resources/no1.png)
+![](myMovies/src/resources/no1.jpg)
 
 A sort demonstration is presented here
 
