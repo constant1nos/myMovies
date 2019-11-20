@@ -13,4 +13,8 @@ Its purpose is to communicate with themoviedb.org API and download three specifi
 
 A sort demonstration is presented here
 
+https://www.youtube.com/watch?v=w3VVACUhiO8&t=77s
+
 Necessary software to run this project (except the files uploaded here)
+- NetBeans
+- Glashfish
