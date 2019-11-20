@@ -17,4 +17,4 @@ https://www.youtube.com/watch?v=w3VVACUhiO8&t=77s
 
 Necessary software to run this project (except the files uploaded here)
 - NetBeans
-- Glashfish
+- Glassfish5
